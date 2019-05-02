@@ -99,7 +99,7 @@ private:
     static std::vector<std::vector<int>> time_mat;
     static std::vector<Node> node_list;
     void insert(const Node &x, int position); // deprecate
-    void recalculate(int position);
+    void recalculate_time_and_dist_seq(int position);
 
 };
 

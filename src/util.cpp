@@ -13,24 +13,26 @@ static const double PI = 3.14159265;
  * dist_mat and time_mat
  * guarantee that the size of dist_mat and time_mat is [N][N]
  */
-void read_dist_time_mat(const string &dist_mat_file) {
+void read_dist_time_mat(const string &dist_mat_file, 
+        std::vector<std::vector<int>> &dist_mat, 
+        std::vector<std::vector<int>> &time_mat, int nnode) {
     ifstream in(dist_mat_file);
-    if (!in) throw string("dist mat reading fails.\n");
-    dist_mat.resize(N);
-    time_mat.resize(N);
-    for (int i = 0; i < N; i++) {
-        dist_mat[i] = vector<int>(N);
-        time_mat[i] = vector<int>(N);
+    if (!in) throw invalid_argument("dist mat reading fails.\n");
+    dist_mat.resize(nnode);
+    time_mat.resize(nnode); 
+    for (int i = 0; i < nnode; i++) {
+        dist_mat[i].resize(nnode);
+        time_mat[i].resize(nnode);
         dist_mat[i][i] = 0;
         time_mat[i][i] = 0;
     }
-    bool header =true;
+    bool has_header =true;
     int data[5];
     char c;
     string value;
     while(getline(in, value)) {
-        if (header) {
-            header = false;
+        if (has_header) {
+            has_header = false;
             continue;
         }
         istringstream readvalue(value);
@@ -52,9 +54,8 @@ void read_dist_time_mat(const string &dist_mat_file) {
  * for depot and charge station: demand_weight = demand_capacity = 0
  * for charge station: early_time = 0, last_time = 24*60
  */
-void read_nodes(vector<Node> &nodes, const string &filename) {
+void read_nodes(const string &filename, vector<Node> &nodes, bool header) {
     ifstream in(filename);
-    bool header = true;
     string line;
     while (getline(in, line)) {
         if (header) {
@@ -82,16 +83,12 @@ void read_nodes(vector<Node> &nodes, const string &filename) {
             lt = lh * 60 + lm;
             if (et > lt) lt = 1440;
         }
-        float ag = cal_angle(lng, lat);
-        nodes.emplace_back(id, type, w, v, et, lt, ag);
+        nodes.emplace_back(id, type, w, v, et, lt);
     }
-    depot = nodes[0];
-    customer_list.insert(customer_list.begin(), nodes.begin()+1, nodes.begin() + 1001);
-    charger_list.push_back(nodes[0]);
-    charger_list.insert(charger_list.begin()+1, nodes.begin() + 1001, nodes.end());
 }
 
 // function for inspect the dist_mat and time_mat
+// 打印最后5行
 void print_mat(vector<vector<int>> &mat) {
     for (auto i = mat.end() - 5; i != mat.end(); i++) {
         for (auto j = (*i).end()-5; j != (*i).end(); j++) cout << *j << " ";
@@ -103,7 +100,6 @@ void print_mat(vector<vector<int>> &mat) {
 void print_node_list(vector<Node> &list, int begin, int end) {
     for (auto i = list.begin() + begin; i != list.begin() + end; i++){
         cout << (*i).id << " "
-        << (*i).angle << " "
         << setprecision(4) << (*i).demand_weight << " "
         << setprecision(4) << (*i).demand_volume << " "
         << (*i).early_time << " "
@@ -111,26 +107,40 @@ void print_node_list(vector<Node> &list, int begin, int end) {
     }
 }
 
-void print_result(const vector<Route> &rout_list) {
-    cout << rout_list.size() << endl;
-    for (const auto &route : rout_list) {
+
+
+// 打印格式
+// vehicle_id, vehicle_type, id->id->id, start_time, back_time, total_dist
+void print_solution(const VRP_Solution &solution, ostream &out) {
+    const auto &route_list = solution.getRoutes();
+#ifndef NDEBUG
+    cout << "in print_solution, number of routes is " << route_list.size() << endl;
+#endif
+    for (const auto &route : route_list) {
         bool start = true;
+        out << route.vehicle.get_vehicle_id() << "," << route.vehicle.get_type() << ",";
+
         for (auto pos : route.route_seq) {
             if (start) {
-                cout << pos;
+                out << pos;
                 start = false;
             }
             else
-                cout <<  "->" << pos;
+                out <<  "->" << pos;
         }
-        cout << endl;
+        out << "," << route.leave_time.front() << ","
+        << route.leave_time.back() << ","
+        << route.total_dist << ","
+        << "0" // waiting time.
+        << endl;
     }
 }
-
+// 打印结果 形式为第一行 总路径数n,
+// 之后n行 车辆类型 车辆id 路径载重率 路径容量率 id->id->id
 void analyse_result(const vector<Route> &route_list) {
     cout << route_list.size() << endl;
     for (const auto &route : route_list) {
-        cout << route.vehicle.v_id << "\t";
+        cout << route.vehicle.get_type() << "\t" << route.vehicle.get_vehicle_id() << "\t";
         cout << route.cur_weight / route.vehicle.max_weight() * 100 << "%\t"
              << route.cur_volume / route.vehicle.capacity() * 100 << "%\t";
         bool start = true;
@@ -145,7 +155,9 @@ void analyse_result(const vector<Route> &route_list) {
         cout << endl;
     }
 }
-int cal_total_cost(const vector<Route> &route_list) {
+
+
+int cal_total_cost(const vector<Route> &route_list, vector<vector<int>> &dist_mat, vector<vector<int>> &time_mat, vector<Node> &node_list) {
     int total = 0, waiting_time;
     for (const auto &route : route_list) {
         total += route.vehicle.fix_cost();

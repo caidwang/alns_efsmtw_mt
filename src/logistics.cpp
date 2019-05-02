@@ -41,7 +41,7 @@ void Route::insert(const Node &x, const int position) {
 //    it_time = leave_time.begin() + position;
 //    it = route_seq.begin() + position;
 
-    recalculate(position);
+    recalculate_time_and_dist_seq(position);
 }
 
 /**
@@ -82,7 +82,7 @@ void Route::drop(int position) {
     dist_rest.erase(it_dist + 1);
 //    bool meet_next_charger = false;
 
-    recalculate(position);
+    recalculate_time_and_dist_seq(position);
 }
 
 /**
@@ -90,7 +90,7 @@ void Route::drop(int position) {
  * O(n)复杂度
  * @param position 新插入的点的位置或删除点的位置
  */
-void Route::recalculate(int position) {
+void Route::recalculate_time_and_dist_seq(int position) {
     auto it_seq = route_seq.begin() + position;
     auto it_time = leave_time.begin() + position;
     auto it_dist = dist_rest.begin() + position;
@@ -119,7 +119,7 @@ void Route::reverse(int begin_pos, int end_pos) {
         ++it0;
         --it1;
     }
-    recalculate(begin_pos);
+    recalculate_time_and_dist_seq(begin_pos);
 }
 
 
