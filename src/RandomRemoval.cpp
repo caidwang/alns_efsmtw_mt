@@ -15,6 +15,6 @@ void RandomRemoval::destroySolution(ISolution &sol) {
     for (int i = 0; i < randomQ; ++i) {
         removeList.emplace_back(1 + rand() % vrp_s.getNCustomers());
     }
-    vrp_s.remove(removeList);
+    vrp_s.remove(removeList); // todo implement remove
 }
 

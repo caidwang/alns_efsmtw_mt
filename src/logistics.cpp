@@ -282,85 +282,63 @@ void Route::reverse(int begin_pos, int end_pos) {
 //    return n.early_time < v.early_time;
 //}
 
-void test_logistic() {
-    // preprocess for test
-    vector<vector<int>> dist_mat;
-    int n = 6;
-    for (int i = 0; i < n; ++i) {
-        dist_mat.emplace_back();
-        for (int j = 0; j < n; ++j) {
-            dist_mat[i].push_back(1000);
-        }
-    }
-//    dist_mat
-//    {{1000, 1000, 1000, 1000, 1000, 1000,},
-//        {1000, 1000, 1000, 1000, 1000, 1000,},
-//        {1000, 1000, 1000, 1000, 1000, 1000,},
-//        {1000, 1000, 1000, 1000, 1000, 1000,},
-//        {1000, 1000, 1000, 1000, 1000, 1000,},
-//        {1000, 1000, 1000, 1000, 1000, 1000,},}
-    vector<vector<int>> time_mat;
-    for (int i = 0; i < n; ++i) {
-        time_mat.emplace_back();
-        for (int j = 0; j < n; ++j) {
-            time_mat[i].push_back(60);
-        }
-    }
-//    time_mat
-//    {{60, 60, 60, 60, 60, 60,},
-//        {60, 60, 60, 60, 60, 60,},
-//        {60, 60, 60, 60, 60, 60,},
-//        {60, 60, 60, 60, 60, 60,},
-//        {60, 60, 60, 60, 60, 60,},
-//        {60, 60, 60, 60, 60, 60,},}
-    vector<Node> node_list;
-    node_list.emplace_back();
-    node_list.emplace_back(1, 2, 0.1, 0.1, 480, 1440);
-    node_list.emplace_back(2, 2, 0.1, 0.1, 480, 1440);
-    node_list.emplace_back(3, 2, 0.1, 0.1, 480, 1440);
-    node_list.emplace_back(4, 3, 0, 0, 0, 1440);
-    Route::set_graph_info(dist_mat, time_mat, node_list);
-
-
-}
-
-void test_route_insert() {
-    Route route0(1, 1, 480);
-    route0.insert(1, 1);
-    route0.insert(2, 2);
-    vector<int> time_seq0 {480, 570, 660, 720};
-    vector<int> dist_seq0 {100000, 99000, 98000, 97000};
-    assert(route0.leave_time == time_seq0);
-    assert(route0.dist_rest == dist_seq0);
-
-}
-void test_route_remove() {
-    Route route(1, 1, 480);
-
-}
-void test_route_drop() {
-    Route route(1, 1, 480);
-
-}
-Relatedness::Relatedness(const vector<Node> &node_list,
-        const vector<std::vector<int>> &dist_mat, 
-        const vector<std::vector<int>> &time_mat) :
-        dist_mat(dist_mat), time_mat(time_mat), node_list(node_list) {
-    int N = node_list.size();
-    for (int i = 0; i < N; ++i) {
-        relatedness_table.emplace_back();
-        for (int j = 0; j < N; ++j) {
-            if (i == j)
-                relatedness_table[i][j] = INT32_MAX;
-            else if (j < i)
-                relatedness_table[i][j] = relatedness_table[j][i];
-            else 
-                relatedness_table[i][j] = static_cast<int>(distance_weight*dist_mat[i][j]) +
-                        static_cast<int>(max(0, node_list[j].early_time - (node_list[i].last_time + OPERATION_TIME + time_mat[i][j])) * waiting_time_weight) +
-                        static_cast<int>(max(0, node_list[i].early_time + OPERATION_TIME + time_mat[i][j] - node_list[j].last_time) * time_window_weight);
-        }
-    }
-}
-int Relatedness::get_relatedness(int node1, int node2) const {
-    return relatedness_table[node1][node2];
-}
+//void test_logistic() {
+//    // preprocess for test
+//    vector<vector<int>> dist_mat;
+//    int n = 6;
+//    for (int i = 0; i < n; ++i) {
+//        dist_mat.emplace_back();
+//        for (int j = 0; j < n; ++j) {
+//            dist_mat[i].push_back(1000);
+//        }
+//    }
+////    dist_mat
+////    {{1000, 1000, 1000, 1000, 1000, 1000,},
+////        {1000, 1000, 1000, 1000, 1000, 1000,},
+////        {1000, 1000, 1000, 1000, 1000, 1000,},
+////        {1000, 1000, 1000, 1000, 1000, 1000,},
+////        {1000, 1000, 1000, 1000, 1000, 1000,},
+////        {1000, 1000, 1000, 1000, 1000, 1000,},}
+//    vector<vector<int>> time_mat;
+//    for (int i = 0; i < n; ++i) {
+//        time_mat.emplace_back();
+//        for (int j = 0; j < n; ++j) {
+//            time_mat[i].push_back(60);
+//        }
+//    }
+////    time_mat
+////    {{60, 60, 60, 60, 60, 60,},
+////        {60, 60, 60, 60, 60, 60,},
+////        {60, 60, 60, 60, 60, 60,},
+////        {60, 60, 60, 60, 60, 60,},
+////        {60, 60, 60, 60, 60, 60,},
+////        {60, 60, 60, 60, 60, 60,},}
+//    vector<Node> node_list;
+//    node_list.emplace_back();
+//    node_list.emplace_back(1, 2, 0.1, 0.1, 480, 1440);
+//    node_list.emplace_back(2, 2, 0.1, 0.1, 480, 1440);
+//    node_list.emplace_back(3, 2, 0.1, 0.1, 480, 1440);
+//    node_list.emplace_back(4, 3, 0, 0, 0, 1440);
+//    Route::set_graph_info(dist_mat, time_mat, node_list);
+//
+//
+//}
+//
+//void test_route_insert() {
+//    Route route0(1, 1, 480);
+//    route0.insert(1, 1);
+//    route0.insert(2, 2);
+//    vector<int> time_seq0 {480, 570, 660, 720};
+//    vector<int> dist_seq0 {100000, 99000, 98000, 97000};
+//    assert(route0.leave_time == time_seq0);
+//    assert(route0.dist_rest == dist_seq0);
+//
+//}
+//void test_route_remove() {
+//    Route route(1, 1, 480);
+//
+//}
+//void test_route_drop() {
+//    Route route(1, 1, 480);
+//
+//}

@@ -6,16 +6,16 @@
 #define ALNS_EFSMTW_MT_RANDOMANDRELATEDREMOVAL_H
 
 #include "ALNS_inc.h"
+#include "Relatedness.h"
+#include "logistics.hpp"
 
-class Relatedness;
-
-class RandomAndRelatedRemoval : ADestroyOperator{
+class RandomAndRelatedRemoval : public ADestroyOperator{
 public:
-    RandomAndRelatedRemoval(std::string name, Relatedness *relatedness) : ADestroyOperator(10, 15, std::move(name)), relatedness(relatedness) {}
+    RandomAndRelatedRemoval(std::string name, Relatedness &relatedness) : ADestroyOperator(10, 15, std::move(name)), relatedness(relatedness) {}
     ~RandomAndRelatedRemoval() = default;
     void destroySolution(ISolution& sol) override ;
 private:
-    const Relatedness *relatedness;
+    const Relatedness &relatedness;
 };
 
 

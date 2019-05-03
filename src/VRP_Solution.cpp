@@ -12,7 +12,7 @@ using namespace std;
 VRP_Solution::VRP_Solution(const vector<Node> *node_list,
         const vector<vector<int>> *dist_mat,
         const vector<vector<int>> *time_mat,
-        int n_cust, int n_node)  : node_list(node_list), dist_mat(dist_mat), time_mat(time_mat), n_customers(n_cust), n_nodes(n_node), cost(0) {
+        int n_cust, int n_node)  : node_list(node_list), dist_mat(dist_mat), time_mat(time_mat), n_customers(n_cust), n_nodes(n_node) {
     for (int i = 0; i <= n_cust; ++i) {
         nonInserted.push_back(i);
     }
@@ -34,7 +34,7 @@ long long VRP_Solution::getHash() {
 
 ISolution *VRP_Solution::getCopy() {
     auto new_S = new VRP_Solution(node_list, dist_mat, time_mat, n_customers, n_nodes);
-    new_S->cost = cost;
+//    new_S->cost = cost;
     new_S->routes = routes;
     new_S->nonInserted = nonInserted;
     return dynamic_cast<ISolution*>(new_S);
@@ -44,11 +44,11 @@ bool VRP_Solution::operator<(ISolution &s) {
     return getPenalizedObjectiveValue() < s.getPenalizedObjectiveValue();
 }
 
-const std::vector<Route> &VRP_Solution::getRoutes() const {
+std::vector<Route> &VRP_Solution::getRoutes() {
     return routes;
 }
 
-const vector<int> &VRP_Solution::getNonInserted() const {
+vector<int> &VRP_Solution::getNonInserted(){
     return nonInserted;
 }
 
@@ -108,5 +108,14 @@ void read_vrp_solution_from_file(const std::string &file_path, VRP_Solution &sol
         // todo solution 中的其他属性 还要更新
     }
 }
+
+bool VRP_Solution::isFeasible() {
+    for(auto &route : routes) {
+        if (route.cur_weight > route.vehicle.max_weight() || route.cur_volume > route.vehicle.capacity())
+            return false;
+    }
+    return all_energe_violation <= 0 && all_energe_violation <= 0;
+}
+
 
 

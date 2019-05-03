@@ -1,15 +1,13 @@
 # ifndef LOGISTICS_H
 # define LOGISTICS_H
 # include <vector>
+# include <queue>
 # include <string>
 # include <cmath>
 # include<algorithm>
 # include <iostream>
 # include<fstream>
-// get_relatedness parameters
-# define DISTANCE_WEIGHT 1
-# define WAITING_TIME_WEIGHT 0.2
-# define TIME_WINDOW_WEIGHT 1
+
 
 // Edge object
 //extern std::vector<std::vector<int> > time_mat;
@@ -84,10 +82,14 @@ public:
         dist_rest.push_back(vehicle.max_distance());
         dist_rest.push_back(vehicle.max_distance());
     }
-
+    size_t size() const {return route_seq.size(); }
+    double ACUT();
     void insert(int id, int position);
     void drop(int position);
-    void reverse(int begin_pos, int end_pos);
+    double evaluateInsert(int positon, int node_id);
+    double evaluateInsert(int position, std::vector<int> node_seq);
+    double evaluateRemove(int position);
+//    void reverse(int begin_pos, int end_pos);
     static void set_graph_info(std::vector<std::vector<int>> &d_mat, std::vector<std::vector<int>> &t_mat, std::vector<Node> &nl) {
         time_mat = t_mat;
         node_list = nl;
@@ -103,21 +105,37 @@ private:
 
 };
 
-
-class Relatedness {
-public:
-    Relatedness(const std::vector<Node> &node_list,
-            const std::vector<std::vector<int>> &dist_mat,
-            const std::vector<std::vector<int>> &time_mat);
-    int get_relatedness(int node1, int node2) const;
-private:
-    const double distance_weight = DISTANCE_WEIGHT, waiting_time_weight = WAITING_TIME_WEIGHT, time_window_weight=TIME_WINDOW_WEIGHT;
-    const std::vector<std::vector<int>> &dist_mat;
-    const std::vector<std::vector<int>> &time_mat;
-    const std::vector<Node> &node_list;
-    std::vector<std::vector<int>> relatedness_table;
+struct insert_info {
+    int cur_route;
+    int cur_position;
+    int RS_ahead;
+    int RS_post;
+    double cost;
 };
 
+class RCLLess {
+    bool operator()(const insert_info &x, const insert_info &y) {return x.cost < y.cost; }
+};
+
+class NodePostionRCL {
+public:
+    explicit NodePostionRCL(int max_number) : maxNumber(max_number) { }
+    void push(insert_info item) {
+        RCL.push(item);
+        if (RCL.size() > maxNumber) RCL.pop();
+    }
+    insert_info randGet() {
+        int index = max(rand() % maxNumber, RCL.size() -1);
+        while (index) {
+            RCL.pop();
+            --index;
+        }
+        return RCL.top();
+    }
+private:
+    int maxNumber;
+    std::priority_queue<insert_info, RCLLess> RCL;
+};
 //bool check_time_violation(const Route &, int *violation_pos = nullptr);
 //bool check_time_violation(const Route &, int customer, int position);
 //bool check_time_violation(const Route &r, const Node &customer, int position);

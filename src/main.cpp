@@ -13,6 +13,7 @@
 using namespace std;
 
 int main() {
+    srand(time(nullptr));
     // 0. 准备数据 读dist,time的矩阵 读节点信息 计算relatedness
     const int depot = 0;
     const int n_customer = 1000;
@@ -23,7 +24,7 @@ int main() {
     read_dist_time_mat("../data/input_distance-time.txt", dist_mat, time_mat, total_nodes);
     vector<Node> node_list;
     read_nodes("../data/input_node.csv", node_list);
-    Relatedness relatedness(node_list, dist_mat, time_mat);
+    Relatedness relatedness(node_list, dist_mat, time_mat, n_customer);
 
     // 1. 创建alns必要的对象和导入参数
     // 注册destroy repair操作子
@@ -35,14 +36,14 @@ int main() {
     SequentialNodeInsertion sequentialI("Sequential Node Insertion");
     RegretInsertion regretI("Regret Insertion");
     RandomRemoval randR("Random Removal");
-    RandomAndRelatedRemoval randRelR("Random and Related Removal", &relatedness);
+    RandomAndRelatedRemoval randRelR("Random and Related Removal", relatedness);
     // 构造初始解
     VRP_Solution initialSol(&node_list, &dist_mat, &time_mat, n_customer, total_nodes);
 
     // 从缓存文件读取初始解 todo 根据文件时间的新旧, 选择最新的文件建初始解
     read_vrp_solution_from_file("../data/init_solution_00", initialSol);
     // 保证初始解可行
-    SequentialNodeInsertion.repairSolution(dynamic_cast<ISolution&>(initialSol));
+    sequentialI.repairSolution(dynamic_cast<ISolution&>(initialSol));
 
 
     ALNS_Parameters alnsParam;
@@ -71,7 +72,7 @@ int main() {
 
     ALNS alns("efsmtw",dynamic_cast<ISolution&>(initialSol),dynamic_cast<IAcceptanceModule&>(sa),alnsParam,dynamic_cast<AOperatorManager&>(opMan),dynamic_cast<IBestSolutionManager&>(bestSM),dynamic_cast<ILocalSearchManager&>(simpleLsManager));
 
-    alns.addUpdatable(dynamic_cast<IUpdatable&>(historyR));
+//    alns.addUpdatable(dynamic_cast<IUpdatable&>(historyR));
 
     alns.solve();
     delete cs;

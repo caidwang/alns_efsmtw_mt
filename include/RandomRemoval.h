@@ -4,8 +4,12 @@
 
 #ifndef ALNS_EFSMTW_MT_RANDOMREMOVAL_H
 #define ALNS_EFSMTW_MT_RANDOMREMOVAL_H
+
+#ifndef MIN_Q_RATE
 #define MIN_Q_RATE 0.1
 #define MAX_Q_RATE 0.15
+#endif
+
 #include "ALNS_inc.h"
 
 class RandomRemoval: public ADestroyOperator {
