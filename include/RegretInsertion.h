@@ -9,9 +9,12 @@
 
 class RegretInsertion: public ARepairOperator {
 public:
-    RegretInsertion(std::string s) : ARepairOperator(std::move(s)) {}
-    ~RegretInsertion() = default;
+    RegretInsertion(std::string s, int k) : ARepairOperator(std::move(s)), k(k) {}
+    ~RegretInsertion() override = default;
     void repairSolution(ISolution& sol) override ;
+
+private:
+    int k;
 };
 
 #endif //ALNS_EFSMTW_MT_REGRETINSERTION_H

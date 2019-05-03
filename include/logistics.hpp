@@ -7,7 +7,9 @@
 # include<algorithm>
 # include <iostream>
 # include<fstream>
-
+#ifndef INF
+#define INF 1000000
+#endif
 
 // Edge object
 //extern std::vector<std::vector<int> > time_mat;
@@ -105,26 +107,31 @@ private:
 
 };
 
-struct insert_info {
+
+// 记录插入node点时, 尝试前后充电站信息
+struct InsertInfo {
     int cur_route;
     int cur_position;
     int RS_ahead;
     int RS_post;
     double cost;
+    bool change_type;
 };
 
+// 用于RCL的比较函数, RCL中, 最大的总是在最前, 当有更小的加入时, 最大的被pop出
 class RCLLess {
-    bool operator()(const insert_info &x, const insert_info &y) {return x.cost < y.cost; }
+    bool operator()(const InsertInfo &x, const InsertInfo &y) {return x.cost < y.cost; }
 };
 
+// 在插入中使用的RCL 保存的是插入cost最小的前max_number个插入动作的InsertInfo
 class NodePostionRCL {
 public:
     explicit NodePostionRCL(int max_number) : maxNumber(max_number) { }
-    void push(insert_info item) {
+    void push(InsertInfo item) {
         RCL.push(item);
         if (RCL.size() > maxNumber) RCL.pop();
     }
-    insert_info randGet() {
+    InsertInfo randGet() {
         int index = max(rand() % maxNumber, RCL.size() -1);
         while (index) {
             RCL.pop();
@@ -134,8 +141,16 @@ public:
     }
 private:
     int maxNumber;
-    std::priority_queue<insert_info, RCLLess> RCL;
+    std::priority_queue<InsertInfo, RCLLess> RCL;
 };
+
+// 针对每个节点在每个位置的插入, 进行四种尝试 {v}, {f,v}, {v, g}, {f, v, g}
+// 返回带惩罚的cost最小的插入方式的info
+InsertInfo evaluate_insert_with_rs(Route &route, int cur_route, int cur_position, int node_id);
+
+// 与evaluate_insert_with_rs一起使用, 在插入时按照info的信息, 确定实际插入时如何处理RS
+void do_insert_from_info(Route &route, InsertInfo &info, int node_id);
+
 //bool check_time_violation(const Route &, int *violation_pos = nullptr);
 //bool check_time_violation(const Route &, int customer, int position);
 //bool check_time_violation(const Route &r, const Node &customer, int position);

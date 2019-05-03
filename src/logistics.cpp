@@ -122,7 +122,42 @@ void Route::reverse(int begin_pos, int end_pos) {
     recalculate_time_and_dist_seq(begin_pos);
 }
 
+// 针对每个节点在每个位置的插入, 进行四种尝试 {v}, {f,v}, {v, g}, {f, v, g}
+// 返回带惩罚的cost最小的插入方式的info
+InsertInfo evaluate_insert_with_rs(Route &route, int cur_route, int cur_position, int node_id) {
+    InsertInfo info{cur_route, cur_position, -1, -1, 0};
+    int sr_id_ahead = find_best_charger(cur_route, cur_position, node_id, true); //todo implement find_best_charger
+    int sr_id_post = find_best_charger(cur_route, cur_position, node_id, false);
+    info.cost = route.evaluateInsert(cur_position, node_id);
+    double cost_p = route.evaluateInsert(cur_position, vector<int>{node_id, sr_id_post});
+    double cost_a = route.evaluateInsert(cur_position, vector<int>{sr_id_ahead, node_id});
+    double cost_both = route.evaluateInsert(cur_position, vector<int>{sr_id_ahead, node_id, sr_id_post});
+    if (cost_a < info.cost) {
+        info.RS_ahead = sr_id_ahead;
+        info.cost = cost_a;
+    }
+    if (cost_p < info.cost) {
+        info.RS_ahead = -1;
+        info.RS_post = sr_id_post;
+    }
+    if (cost_both < info.cost) {
+        info.RS_post = sr_id_post;
+        info.RS_ahead = sr_id_ahead;
+        info.cost = cost_both;
+    }
+    return info;
+}
 
+// 与evaluate_insert_with_rs一起使用, 在插入时按照info的信息, 确定实际插入时如何处理RS
+void do_insert_from_info(Route &route, InsertInfo &info, int node_id) {
+    if (info.RS_post > 0) {
+        route.insert(info.RS_post, info.cur_position);
+    }
+    route.insert(node_id, info.cur_position);
+    if (info.RS_ahead > 0) {
+        route.insert(info.RS_ahead, info.cur_position);
+    }
+}
 
 ///**
 // * Check if the route has time violation
