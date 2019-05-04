@@ -85,12 +85,17 @@ public:
         dist_rest.push_back(vehicle.max_distance());
     }
     size_t size() const {return route_seq.size(); }
+    int get_node_by_position(int position);
     double ACUT();
     void insert(int id, int position);
-    void drop(int position);
-    double evaluateInsert(int positon, int node_id);
+//    void drop(int position);
+    void remove(int position);
+    void execTwoOpt(int begin, int end);
+    double evaluateInsert(int positon, int node_id); // 需要考虑插入客户点和插入RS两种情况
     double evaluateInsert(int position, std::vector<int> node_seq);
-    double evaluateRemove(int position);
+    double evaluateRemove(int position); // 需要考虑移除RS和移除客户点两种情况
+    double evaluateTwoOpt(int begin, int end); // begin和end是反转序列的开始点和结束点
+    //evaluate 系列方法给的是动作发生前后后路径penalizedCost的变化值
 //    void reverse(int begin_pos, int end_pos);
     static void set_graph_info(std::vector<std::vector<int>> &d_mat, std::vector<std::vector<int>> &t_mat, std::vector<Node> &nl) {
         time_mat = t_mat;
@@ -151,6 +156,11 @@ InsertInfo evaluate_insert_with_rs(Route &route, int cur_route, int cur_position
 // 与evaluate_insert_with_rs一起使用, 在插入时按照info的信息, 确定实际插入时如何处理RS
 void do_insert_from_info(Route &route, InsertInfo &info, int node_id);
 
+/**
+ * ahead为true时, 返回node_id与cur_position-1节点之间插入的最优充电站
+ * ahead为false时, 返回node_id与cur_position节点之间插入的最优充电站
+ */
+int find_best_charger(Route& cur_route, int cur_position, int node_id, bool ahead);
 //bool check_time_violation(const Route &, int *violation_pos = nullptr);
 //bool check_time_violation(const Route &, int customer, int position);
 //bool check_time_violation(const Route &r, const Node &customer, int position);

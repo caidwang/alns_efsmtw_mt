@@ -126,8 +126,8 @@ void Route::reverse(int begin_pos, int end_pos) {
 // 返回带惩罚的cost最小的插入方式的info
 InsertInfo evaluate_insert_with_rs(Route &route, int cur_route, int cur_position, int node_id) {
     InsertInfo info{cur_route, cur_position, -1, -1, 0};
-    int sr_id_ahead = find_best_charger(cur_route, cur_position, node_id, true); //todo implement find_best_charger
-    int sr_id_post = find_best_charger(cur_route, cur_position, node_id, false);
+    int sr_id_ahead = find_best_charger(route, cur_position, node_id, true); //todo implement find_best_charger
+    int sr_id_post = find_best_charger(route, cur_position, node_id, false);
     info.cost = route.evaluateInsert(cur_position, node_id);
     double cost_p = route.evaluateInsert(cur_position, vector<int>{node_id, sr_id_post});
     double cost_a = route.evaluateInsert(cur_position, vector<int>{sr_id_ahead, node_id});

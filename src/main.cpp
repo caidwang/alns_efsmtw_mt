@@ -8,7 +8,7 @@
 #include "RandomAndRelatedRemoval.h"
 #include "SequentialNodeInsertion.h"
 #include "RegretInsertion.h"
-#include "VRP_LS.h"
+#include "LS_Two_opt.h"
 
 using namespace std;
 
@@ -34,7 +34,8 @@ int main() {
 //    TSP_Worst_Removal worstR("Worst Removal");
 //    TSP_History_Removal historyR("History Removal",CITY_SIZE);
     SequentialNodeInsertion sequentialI("Sequential Node Insertion");
-    RegretInsertion regretI("Regret Insertion");
+    RegretInsertion regret2I("Regret-2 Insertion", 2);
+    RegretInsertion regret3I("Regret-3 Insertion", 3);
     RandomRemoval randR("Random Removal");
     RandomAndRelatedRemoval randRelR("Random and Related Removal", relatedness);
     // 构造初始解
@@ -61,12 +62,12 @@ int main() {
     opMan.addDestroyOperator(dynamic_cast<ADestroyOperator&>(randRelR));
 //    opMan.addDestroyOperator(dynamic_cast<ADestroyOperator&>(historyR));
     opMan.addRepairOperator(dynamic_cast<ARepairOperator&>(sequentialI));
-    opMan.addRepairOperator(dynamic_cast<ARepairOperator&>(regretI));
-
+    opMan.addRepairOperator(dynamic_cast<ARepairOperator&>(regret2I));
+    opMan.addRepairOperator(dynamic_cast<ARepairOperator&>(regret3I));
     SimpleBestSolutionManager bestSM(alnsParam);
     SimpleLocalSearchManager simpleLsManager(alnsParam);
 
-    VRP_LS ls("My LS");
+    LS_Two_opt ls("My LS");
 
     simpleLsManager.addLocalSearchOperator(dynamic_cast<ILocalSearch&>(ls));
 

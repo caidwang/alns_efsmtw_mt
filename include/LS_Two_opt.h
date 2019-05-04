@@ -2,14 +2,15 @@
 // Created by wsc on 19-5-2.
 //
 
-#ifndef ALNS_EFSMTW_MT_VRP_LS_H
-#define ALNS_EFSMTW_MT_VRP_LS_H
+#ifndef ALNS_EFSMTW_MT_LS_TWO_OPT_H
+#define ALNS_EFSMTW_MT_LS_TWO_OPT_H
 
 #include "ALNS_inc.h"
-
-class VRP_LS : public ILocalSearch {
+#include "logistics.hpp"
+#include "VRP_Solution.h"
+class LS_Two_opt : public ILocalSearch {
 public:
-    explicit VRP_LS(std::string name) : name(std::move(name)) {}
+    explicit LS_Two_opt(std::string name) : name(std::move(name)) {}
     //! Perform a local search on the solution.
     //! \return true if the solution is improved.
     bool performLocalSearch(ISolution& sol) override ;
@@ -22,4 +23,4 @@ private:
 };
 
 
-#endif //ALNS_EFSMTW_MT_VRP_LS_H
+#endif //ALNS_EFSMTW_MT_LS_TWO_OPT_H

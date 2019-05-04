@@ -6,6 +6,7 @@
 #define ALNS_EFSMTW_MT_REGRETINSERTION_H
 
 #include "ALNS_inc.h"
+#include "logistics.hpp"
 
 class RegretInsertion: public ARepairOperator {
 public:
@@ -15,6 +16,11 @@ public:
 
 private:
     int k;
+    std::vector<bool> visited;
+    void update_position_cost(std::vector<int> &NonInsert, std::vector<Route> &routes,
+                              std::vector<std::vector<InsertInfo>> &pos_cost);
+    void calculate_regret_value(const std::vector<std::vector<InsertInfo>> &pos_cost,
+            std::vector<double> &regret_value);
 };
 
 #endif //ALNS_EFSMTW_MT_REGRETINSERTION_H
