@@ -2,6 +2,8 @@
 #include "ALNS_inc.h"
 #include <vector>
 #include <VRP_Solution.h>
+#include <LS_Relocate.h>
+#include <LS_InsertRemoveRS.h>
 #include "logistics.hpp"
 #include "util.hpp"
 #include "RandomRemoval.h"
@@ -9,6 +11,7 @@
 #include "SequentialNodeInsertion.h"
 #include "RegretInsertion.h"
 #include "LS_Two_opt.h"
+#include "MyLocalSearchManager.h"
 
 using namespace std;
 
@@ -25,7 +28,7 @@ int main() {
     vector<Node> node_list;
     read_nodes("../data/input_node.csv", node_list);
     Relatedness relatedness(node_list, dist_mat, time_mat, n_customer);
-
+    Route::set_graph_info(dist_mat, time_mat, node_list);
     // 1. 创建alns必要的对象和导入参数
     // 注册destroy repair操作子
 //    TSP_Best_Insert bestI("Best Insertion");
@@ -65,11 +68,14 @@ int main() {
     opMan.addRepairOperator(dynamic_cast<ARepairOperator&>(regret2I));
     opMan.addRepairOperator(dynamic_cast<ARepairOperator&>(regret3I));
     SimpleBestSolutionManager bestSM(alnsParam);
-    SimpleLocalSearchManager simpleLsManager(alnsParam);
+    MyLocalSearchManager simpleLsManager(alnsParam);
 
-    LS_Two_opt ls("My LS");
-
-    simpleLsManager.addLocalSearchOperator(dynamic_cast<ILocalSearch&>(ls));
+    LS_Two_opt lsTwoOpt("My LS");
+    LS_Relocate lsRelocate("Ls Relocated");
+    LS_InsertRemoveRS lsInsertRemoveRs("LS InsertRemove RS");
+    simpleLsManager.addLocalSearchOperator(dynamic_cast<ILocalSearch&>(lsTwoOpt));
+    simpleLsManager.addLocalSearchOperator(dynamic_cast<ILocalSearch&>(lsRelocate));
+    simpleLsManager.addLocalSearchOperator(dynamic_cast<ILocalSearch&>(lsInsertRemoveRs));
 
     ALNS alns("efsmtw",dynamic_cast<ISolution&>(initialSol),dynamic_cast<IAcceptanceModule&>(sa),alnsParam,dynamic_cast<AOperatorManager&>(opMan),dynamic_cast<IBestSolutionManager&>(bestSM),dynamic_cast<ILocalSearchManager&>(simpleLsManager));
 

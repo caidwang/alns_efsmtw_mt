@@ -67,51 +67,76 @@ int inline Vehicle::fix_cost() const{
     return type == IVECO? 200 : 300;
 }
 
+struct SeqProperty {
+    int Dur; // 经过松弛的seq通过时间
+    int E;
+    int L;
+    int TW;
+    int WT; // 在L(seq)出发时依然需要的等待时间
+    bool f;
+    int Y_prev;
+    int Y_rear;
+    int EY;
+};
+const SeqProperty make_property_from_node(const Node &n);
+
+struct PenaltyParam {
+    double volumeW, weightW, timeWinW, energeW;
+};
+
 class Route {
 public:
     Vehicle vehicle;
     std::vector<int> route_seq; // 路线经过的节点的id序列
-    // TODO 下面两个是否需要
-    std::vector<int> leave_time; // 离开第i个节点的时间, 最后一个节点的时间记录返程到达仓库的时间
-    std::vector<int> dist_rest; // 离开第i个节点时的剩余里程
-    double cur_weight, cur_volume;
+    double total_weight, total_volume;
     int total_dist;
-    Route(int v_id, int v_type, int start_time) : vehicle(v_id, v_type), cur_weight(0), cur_volume(0), total_dist(0) {
-        route_seq.push_back(0);
-        route_seq.push_back(0);
-        leave_time.push_back(start_time);
-        leave_time.push_back(start_time);
-        dist_rest.push_back(vehicle.max_distance());
-        dist_rest.push_back(vehicle.max_distance());
-    }
+
+    Route(int v_id, int v_type, int start_time);
     size_t size() const {return route_seq.size(); }
     int get_node_by_position(int position);
-    double ACUT();
+    int get_back_time();
+
+    void lazy_insert(int id, int position);
     void insert(int id, int position);
-//    void drop(int position);
+    void lazy_remove(int position);
     void remove(int position);
-    void execTwoOpt(int begin, int end);
-    double evaluateInsert(int positon, int node_id); // 需要考虑插入客户点和插入RS两种情况
+    void execTwoOpt(int begin, int end); // begin和end是反转序列的开始点和结束点
+    void update(int failure_begin, int failure_end) { update_whole_route();} // 失效开始的位置和失效结束的位置
+
+    double ACUT();
+    double evaluateInsert(int position, int node_id); // 需要考虑插入客户点和插入RS两种情况
     double evaluateInsert(int position, std::vector<int> node_seq);
     double evaluateRemove(int position); // 需要考虑移除RS和移除客户点两种情况
     double evaluateTwoOpt(int begin, int end); // begin和end是反转序列的开始点和结束点
     //evaluate 系列方法给的是动作发生前后后路径penalizedCost的变化值
-//    void reverse(int begin_pos, int end_pos);
-    static void set_graph_info(std::vector<std::vector<int>> &d_mat, std::vector<std::vector<int>> &t_mat, std::vector<Node> &nl) {
-        time_mat = t_mat;
-        node_list = nl;
-        dist_mat = d_mat;
-    }
+    bool isFeasible();
+    static void set_graph_info(std::vector<std::vector<int>> &d_mat, std::vector<std::vector<int>> &t_mat, std::vector<Node> &nl);
 
 private:
     static std::vector<std::vector<int>> dist_mat;
     static std::vector<std::vector<int>> time_mat;
     static std::vector<Node> node_list;
-    void insert(const Node &x, int position); // deprecate
-    void recalculate_time_and_dist_seq(int position);
+
+//    std::vector<int> leave_time; // 离开第i个节点的时间, 最后一个节点的时间记录返程到达仓库的时间
+//    std::vector<int> dist_rest; // 离开第i个节点时的剩余里程
+    int start_time, cnt_SR;
+    double cost;
+    std::vector<SeqProperty> forward;
+    std::vector<SeqProperty> backward;
+    PenaltyParam penaltyParam;
+    SeqProperty property_concatenate(const SeqProperty &a, const SeqProperty &b, int id_last_node_in_a, int id_first_node_in_b, int max_distance);
+    SeqProperty calPropertyForSeq(const std::vector<int> &seq, double &weight, double &volume, int &distance, int &SR);
+    void update_whole_route();
+    void update_partial(int failure_position);
 
 };
 
+double calculate_penalized_cost(const Vehicle &vehicle,
+                                int total_dist,
+                                int cnt_SR,
+                                double total_weight,
+                                double total_volume,
+                                const SeqProperty &seqInfo, const PenaltyParam &penaltyParam);
 
 // 记录插入node点时, 尝试前后充电站信息
 struct InsertInfo {
@@ -161,20 +186,6 @@ void do_insert_from_info(Route &route, InsertInfo &info, int node_id);
  * ahead为false时, 返回node_id与cur_position节点之间插入的最优充电站
  */
 int find_best_charger(Route& cur_route, int cur_position, int node_id, bool ahead);
-//bool check_time_violation(const Route &, int *violation_pos = nullptr);
-//bool check_time_violation(const Route &, int customer, int position);
-//bool check_time_violation(const Route &r, const Node &customer, int position);
-//bool check_capacity_violation(const Route &);
-//bool check_capacity_violation(const Route &r, int customer, int position = 0);
-//bool check_capacity_violation(const Route &r, const Node &customer, int position = 0);
-//bool check_distance_violation(const Route &, int *violation_pos = nullptr);
-//bool check_distance_violation(const Route &, int customer, int position);
-//bool check_distance_violation(const Route &, const Node &customer, int position);
 
-
-//void find_charger(Route &route, int &charger_index, int &charger_position, bool bin_direct_search=true);
-//void remove_redundant_charger(Route &, int);
-//bool last_time_order(const Node &, const Node &);
-//bool early_time_order(const Node &, const Node &);
 
 # endif //LOGISTICS_H

@@ -111,7 +111,7 @@ void read_vrp_solution_from_file(const std::string &file_path, VRP_Solution &sol
 
 bool VRP_Solution::isFeasible() {
     for(auto &route : routes) {
-        if (route.cur_weight > route.vehicle.max_weight() || route.cur_volume > route.vehicle.capacity())
+        if (route.total_weight > route.vehicle.max_weight() || route.total_volume > route.vehicle.capacity())
             return false;
     }
     return all_energe_violation <= 0 && all_energe_violation <= 0;
