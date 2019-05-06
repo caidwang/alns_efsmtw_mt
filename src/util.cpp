@@ -114,7 +114,8 @@ void print_node_list(vector<Node> &list, int begin, int end) {
 void print_solution(VRP_Solution &solution, ostream &out) {
     auto &route_list = solution.getRoutes();
 #ifndef NDEBUG
-    cout << "in print_solution, number of routes is " << route_list.size() << endl;
+    cout << "in print_solution, number of routes is " << route_list.size()
+    << ", the solution is " << (solution.isFeasible() ? "feasible." : "unfeasible.") << endl;
 #endif
     for (const auto &route : route_list) {
         bool start = true;
@@ -128,8 +129,8 @@ void print_solution(VRP_Solution &solution, ostream &out) {
             else
                 out <<  "->" << pos;
         }
-        out << "," << route.leave_time.front() << ","
-        << route.leave_time.back() << ","
+        out << "," << route.get_start_time() << ","
+        << route.get_back_time() << ","
         << route.total_dist << ","
         << "0" // waiting time.
         << endl;

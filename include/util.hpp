@@ -40,7 +40,7 @@ void print_mat(std::vector<std::vector<int> > &mat);
 void print_node_list(std::vector<Node> &, int, int);
 
 // 打印结果 形式为第一行 总路径数n, 之后n行id->id->id 车辆类型
-void print_solution(const VRP_Solution &solution, ostream &out);
+void print_solution(VRP_Solution &solution, std::ostream &out);
 // 打印结果 形式为第一行 总路径数n,
 // 之后n行 车辆类型 车辆id 路径载重率 路径容量率 id->id->id
 void analyse_result(const std::vector<Route> &route_list);

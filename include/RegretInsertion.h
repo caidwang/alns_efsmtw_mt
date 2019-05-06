@@ -19,7 +19,7 @@ private:
     std::vector<bool> visited;
     void update_position_cost(std::vector<int> &NonInsert, std::vector<Route> &routes,
                               std::vector<std::vector<InsertInfo>> &pos_cost);
-    void calculate_regret_value(const std::vector<std::vector<InsertInfo>> &pos_cost,
+    void calculate_regret_value(std::vector<std::vector<InsertInfo>> &pos_cost,
             std::vector<double> &regret_value);
 };
 

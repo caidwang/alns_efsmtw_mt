@@ -21,7 +21,7 @@ Relatedness::Relatedness(const std::vector<Node> &node_list, const std::vector<s
         dist_mat(dist_mat), time_mat(time_mat), node_list(node_list), n_customers(n_customers) {
     int N = node_list.size();
     for (int i = 0; i < N; ++i) {
-        relatedness_table.emplace_back();
+        relatedness_table.emplace_back(N);
         for (int j = 0; j < N; ++j) {
             if (i == j)
                 relatedness_table[i][j] = INT32_MAX;

@@ -45,13 +45,14 @@ public:
     std::vector<int> &getNonInserted();
     int getNNodes() const;
     int getNCustomers() const;
+    void remove(std::vector<int> remove_list);
 
 private:
     const std::vector<Node> *node_list;
     const std::vector<std::vector<int>> *dist_mat;
     const std::vector<std::vector<int>> *time_mat;
     const int n_customers, n_nodes;
-    int all_time_window_violation, all_energe_violation; // todo 保证总是最新的, isfeasible中将直接调用
+
     std::vector<Route> routes;
     std::vector<int> nonInserted; // 是否应当只保存客户集?
 };

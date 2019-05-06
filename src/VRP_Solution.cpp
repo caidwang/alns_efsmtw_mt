@@ -34,7 +34,7 @@ long long VRP_Solution::getHash() {
 
 ISolution *VRP_Solution::getCopy() {
     auto new_S = new VRP_Solution(node_list, dist_mat, time_mat, n_customers, n_nodes);
-//    new_S->cost = cost;
+//    new_S->penalizedCost = penalizedCost;
     new_S->routes = routes;
     new_S->nonInserted = nonInserted;
     return dynamic_cast<ISolution*>(new_S);
@@ -85,9 +85,11 @@ void read_vrp_solution_from_file(const std::string &file_path, VRP_Solution &sol
                 }
                 else if (i == 2) {
                     istringstream seq(block);
-                    seq >> r_id;
-                    seq.ignore(2);
-                    id_sequence.push_back(r_id);
+                    while(seq) {
+                        seq >> r_id;
+                        seq.ignore(2);
+                        id_sequence.push_back(r_id);
+                    }
                 }
                 else if (i == 3) {
                     start_time = stoi(block);
@@ -95,11 +97,13 @@ void read_vrp_solution_from_file(const std::string &file_path, VRP_Solution &sol
             }
             Route cur_route(v_id, v_type, start_time);
             for (auto it = id_sequence.begin() + 1; it != id_sequence.end() - 1; ++it) {
-                cur_route.insert(*it, cur_route.route_seq.size() - 1);
+                cur_route.lazy_insert(*it, cur_route.route_seq.size() - 1);
                 not_insert.erase(*it);
-                // todo 总是检查是否需要更新route的属性信息 当前通过insert方法 是每次都检查的
+                // todo 总是检查是否需要更新route的属性信息 当前通过insert方法 全部插入后一次更新
             }
+            cur_route.update(0, cur_route.size() - 1);
             routes.push_back(cur_route);
+            id_sequence.clear();
         }
         solution.nonInserted.clear();
         for (int it : not_insert) {
@@ -110,11 +114,57 @@ void read_vrp_solution_from_file(const std::string &file_path, VRP_Solution &sol
 }
 
 bool VRP_Solution::isFeasible() {
+    if (!nonInserted.empty()) return false;
     for(auto &route : routes) {
-        if (route.total_weight > route.vehicle.max_weight() || route.total_volume > route.vehicle.capacity())
+        if (!route.isFeasible())
             return false;
     }
-    return all_energe_violation <= 0 && all_energe_violation <= 0;
+    return true;
+}
+
+double VRP_Solution::getPenalizedObjectiveValue() {
+    double object = 0;
+    for (auto &route : routes) {
+        object += route.get_penalized_cost();
+    }
+    return object;
+}
+
+double VRP_Solution::getObjectiveValue() {
+    double object = 0;
+    for (auto &route : routes) {
+        object += route.get_object_cost();
+    }
+    return object;
+}
+
+void VRP_Solution::remove(std::vector<int> remove_list) {
+    // todo 加入信息 进行重构
+    set<int> waiting_for_remove;
+    for (auto node: remove_list) {
+        nonInserted.push_back(node);
+        waiting_for_remove.insert(node);
+    }
+    for (auto &route : routes) {
+        for (auto it = route.route_seq.begin(); it != route.route_seq.end(); ++it) {
+            auto set_it = waiting_for_remove.find(*it);
+            if (set_it != waiting_for_remove.end()) {
+                waiting_for_remove.erase(set_it);
+                route.lazy_remove(it - route.route_seq.begin());
+            }
+        }
+        route.update(0, route.size());
+    }
+#ifndef NDEBUG
+    if (!waiting_for_remove.empty()) {
+        for (auto i : waiting_for_remove) {
+            cout << i << " ";
+        }
+        cout << endl;
+    }
+
+    assert(waiting_for_remove.empty());
+#endif
 }
 
 

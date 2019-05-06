@@ -15,7 +15,7 @@
 
 using namespace std;
 
-int main() {
+int main1() {
     srand(time(nullptr));
     // 0. 准备数据 读dist,time的矩阵 读节点信息 计算relatedness
     const int depot = 0;

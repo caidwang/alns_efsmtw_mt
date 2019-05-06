@@ -30,7 +30,7 @@ bool LS_InsertRemoveRS::performLocalSearch(ISolution &sol) {
                 else {
                     // 如果当前点的前一点不是SR 尝试在它前面插入一个SR
                     if (!prev_is_SR) {
-                        SR = find_best_charger(route, pos, route.get_node_by_position(pos), true);
+                        SR = find_best_charger(route, pos, route.get_node_by_position(pos), true, Route::get_time_mat());
                         delta = route.evaluateInsert(pos, SR);
                         move_is_insert = true;
                     }

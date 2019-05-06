@@ -15,7 +15,7 @@ void SequentialNodeInsertion::repairSolution(ISolution &sol) {
     for (auto it: newS.getNonInserted()) {
         int cur_route, cur_position;
         double cur_cost;
-        NodePostionRCL rcl(5);
+        NodePositionRCL rcl(5);
         for (cur_route = 0; cur_route < routes.size(); ++cur_route) {
             int length = routes[cur_route].size(); // 插入位置可以从1到length-1
             for (cur_position = 1; cur_position < length; ++cur_position) {

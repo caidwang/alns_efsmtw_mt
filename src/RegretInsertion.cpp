@@ -24,10 +24,10 @@ void RegretInsertion::repairSolution(ISolution &sol) {
         for (auto &j: i)
             j.cost = INF;
 
-    for (auto &route : newS.getRoutes()) {
-        // todo update routes to newest states.
-        route.update();
-    }
+//    for (auto &route : newS.getRoutes()) {
+        // todo update routes to newest states. 如果能够保证route的每次插入删除的数据更新完备性 这个是不需要的
+//        route.update(0, route.size());
+//    }
 
     visited.resize(num_of_nodes);
     fill(visited.begin(), visited.end(), false);
@@ -42,7 +42,7 @@ void RegretInsertion::repairSolution(ISolution &sol) {
         int hurriest_node = -1;
         double hurriest_cost = 0;
         for (int i = 0; i < num_of_nodes; ++i) {
-            if (regret_value[i] < hurriest_cost) {
+            if (!visited[i] && regret_value[i] > hurriest_cost) {
                 hurriest_cost = regret_value[i];
                 hurriest_node = i;
             }
@@ -86,7 +86,8 @@ void RegretInsertion::update_position_cost(
     }
 }
 
-inline void RegretInsertion::calculate_regret_value(const std::vector<std::vector<InsertInfo>> &pos_cost, std::vector<double> &regret_value) {
+// 计算所有节点的regret_value, 将结果保存在regret_value中, 同时会破坏pos_cost的顺序
+inline void RegretInsertion::calculate_regret_value(std::vector<std::vector<InsertInfo>> &pos_cost, std::vector<double> &regret_value) {
     for(int i = 0; i < regret_value.size(); ++i) {
         regret_value[i] = 0;
         if (!visited[i]) {

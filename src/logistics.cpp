@@ -3,6 +3,9 @@
 #include <cassert>
 using namespace std;
 
+vector<vector<int>> Route::dist_mat;
+vector<vector<int>> Route::time_mat;
+vector<Node> Route::node_list;
 
 Route::Route(int v_id, int v_type, int start_time) : vehicle(v_id, v_type), total_weight(0), total_volume(0), total_dist(0), start_time(start_time){
     route_seq.push_back(0);
@@ -11,7 +14,9 @@ Route::Route(int v_id, int v_type, int start_time) : vehicle(v_id, v_type), tota
         forward.push_back(make_property_from_node(node_list[0]));
         backward.push_back(make_property_from_node(node_list[0]));
     }
-    cost = 0;
+    penaltyParam = {1000, 1000, 10, 1};
+    penalizedCost = 0;
+    objCost = 0;
 }
 
 /**
@@ -62,7 +67,7 @@ Route::property_concatenate(const SeqProperty &a, const SeqProperty &b, int id_l
     return ret;
 }
 
-inline int Route::get_node_by_position(int position) {
+inline int Route::get_node_by_position(int position) const{
     if (position < 0 || position >= size()) throw invalid_argument("positon is out of range.");
     return route_seq[position];
 }
@@ -90,7 +95,8 @@ void Route::update_whole_route() {
     for (int i = size() - 2; i >= 0; --i) {
         backward[i] = property_concatenate(make_property_from_node(node_list[get_node_by_position(i)]), backward[i+1], get_node_by_position(i), get_node_by_position(i+1), vehicle.max_distance());
     }
-    cost = calculate_penalized_cost(vehicle, total_dist, cnt_SR, total_weight, total_volume, forward.back(), penaltyParam); // todo 存在问题 这里计算的是最小waiting time的状态 和 start time 不符
+    penalizedCost = calculate_penalized_cost(vehicle, total_dist, cnt_SR, total_weight, total_volume, forward.back(), penaltyParam); // todo 存在问题 这里计算的是最小waiting time的状态 和 start time 不符
+    objCost = calculate_penalized_cost(vehicle, total_dist, cnt_SR, total_weight, total_volume, forward.back(), PenaltyParam{0, 0, 0, 0});
 }
 
 /**
@@ -109,7 +115,7 @@ void Route::lazy_insert(int id, int position) {
 void Route::update_partial(int failure_position) {
 }
 
-int Route::get_back_time() {
+int Route::get_back_time() const {
     return start_time + forward.back().Dur;
 }
 
@@ -125,7 +131,7 @@ void Route::remove(int position) {
 
 void Route::execTwoOpt(int begin, int end) {
     if (begin == end) return ;
-    if (begin < end) throw invalid_argument("begin position must be ahead of end position");
+    if (begin > end) throw invalid_argument("begin position must be ahead of end position");
     if (begin <= 0 || begin >= size() - 1 || end >= size() - 1) throw invalid_argument("Depot can't be reverse.");
     vector<int> temp;
     for (auto it = route_seq.begin() + begin; it != route_seq.begin() + end + 1; ++it) {
@@ -155,7 +161,7 @@ double Route::evaluateInsert(int position, int node_id) {
             node_id,
             node_after,
             vehicle.max_distance());
-    return calculate_penalized_cost(vehicle, temp_dist, temp_cnt_SR, temp_weight, temp_volume, temp_route_property, penaltyParam) - cost;
+    return calculate_penalized_cost(vehicle, temp_dist, temp_cnt_SR, temp_weight, temp_volume, temp_route_property, penaltyParam) - penalizedCost;
 }
 
 double Route::evaluateInsert(int position, std::vector<int> node_seq) {
@@ -175,7 +181,7 @@ double Route::evaluateInsert(int position, std::vector<int> node_seq) {
             node_seq.back(),
             node_after,
             vehicle.max_distance());
-    return calculate_penalized_cost(vehicle, temp_dist, temp_cnt_SR, temp_weight, temp_volume, temp_route_property, penaltyParam) - cost;
+    return calculate_penalized_cost(vehicle, temp_dist, temp_cnt_SR, temp_weight, temp_volume, temp_route_property, penaltyParam) - penalizedCost;
 }
 
 double Route::evaluateRemove(int position) {
@@ -190,7 +196,7 @@ double Route::evaluateRemove(int position) {
             node_before,
             node_after,
             vehicle.max_distance());
-    return calculate_penalized_cost(vehicle, temp_dist, temp_cnt_SR, temp_weight, temp_volume, temp_route_property, penaltyParam) - cost;
+    return calculate_penalized_cost(vehicle, temp_dist, temp_cnt_SR, temp_weight, temp_volume, temp_route_property, penaltyParam) - penalizedCost;
 }
 
 double Route::evaluateTwoOpt(int begin, int end) {
@@ -207,7 +213,7 @@ double Route::evaluateTwoOpt(int begin, int end) {
     
     SeqProperty temp_Property = property_concatenate(property_concatenate(forward[begin - 1], invSeqProperty, node_before, invSeq.front(), vehicle.max_distance()),backward[end+1], invSeq.back(), node_after, vehicle.max_distance());
 
-    return calculate_penalized_cost(vehicle, temp_dist, cnt_SR, total_weight, total_volume, temp_Property, penaltyParam) - cost;
+    return calculate_penalized_cost(vehicle, temp_dist, cnt_SR, total_weight, total_volume, temp_Property, penaltyParam) - penalizedCost;
     return 0;
 }
 
@@ -245,13 +251,17 @@ bool Route::isFeasible() {
     return routeProperty.EY <= 0 && routeProperty.TW <= 0 && total_volume <= vehicle.capacity() && total_weight <= vehicle.max_weight();
 }
 
+int Route::get_start_time() const {
+    return forward.back().E;
+}
+
 
 // 针对每个节点在每个位置的插入, 进行四种尝试 {v}, {f,v}, {v, g}, {f, v, g}
 // 返回带惩罚的cost最小的插入方式的info
 InsertInfo evaluate_insert_with_rs(Route &route, int cur_route, int cur_position, int node_id) {
     InsertInfo info{cur_route, cur_position, -1, -1, 0};
-    int sr_id_ahead = find_best_charger(route, cur_position, node_id, true); //todo implement find_best_charger
-    int sr_id_post = find_best_charger(route, cur_position, node_id, false);
+    int sr_id_ahead = find_best_charger(route, cur_position, node_id, true, Route::get_dist_mat()); //todo implement find_best_charger
+    int sr_id_post = find_best_charger(route, cur_position, node_id, false, Route::get_dist_mat());
     info.cost = route.evaluateInsert(cur_position, node_id);
     double cost_p = route.evaluateInsert(cur_position, vector<int>{node_id, sr_id_post});
     double cost_a = route.evaluateInsert(cur_position, vector<int>{sr_id_ahead, node_id});
@@ -311,57 +321,70 @@ calculate_penalized_cost(const Vehicle &vehicle,
                          double total_volume,
                          const SeqProperty &seqInfo,
                          const PenaltyParam &penaltyParam) {
+    if (total_dist == 0) return 0;
     return vehicle.fix_cost()
             + total_dist * vehicle.cost_pkm() / 1000.0
             + cnt_SR * CHARGE_COST
             + WAITING_COST * seqInfo.WT / 60.0
-            + seqInfo.EY * penaltyParam.energeW
+            + seqInfo.EY * penaltyParam.energyW
             + seqInfo.TW * penaltyParam.timeWinW
             + max(0., total_weight - vehicle.max_weight()) * penaltyParam.weightW
             + max(0., total_volume - vehicle.capacity()) * penaltyParam.volumeW;
 }
 
-int find_best_charger(Route& cur_route, int cur_position, int node_id, bool ahead) {
-    return 0;
+
+class DistLess {
+public:
+    typedef int first_argument_type;
+    typedef int second_argument_type;
+    typedef bool result_type;
+    DistLess(int base_node, const vector<vector<int>> *dist_mat) : base(base_node), mat(dist_mat) {}
+    bool operator()(int node1, int node2) {
+        return (*mat)[base][node1] < (*mat)[base][node2];
+    }
+private:
+    int base;
+    const vector<vector<int>> *mat;
+};
+
+/**
+ * ahead为true时, 返回node_id与cur_position-1节点之间插入的最优充电站
+ * ahead为false时, 返回node_id与cur_position节点之间插入的最优充电站
+ */
+int find_best_charger(Route &cur_route, int cur_position, int node_id, bool ahead, const vector<vector<int>> *dist_mat) {
+    static vector<vector<int>> near_chargers;
+    if (near_chargers.empty()) {
+        for (int i = 0; i <= 1000; ++i) {
+            near_chargers.emplace_back();
+            for(int j = 1001; j < 1101; ++j) {
+                near_chargers[i].push_back(j);
+            }
+            sort(near_chargers[i].begin(), near_chargers[i].end(), DistLess(i, (dist_mat)));
+            near_chargers.resize(5);
+        }
+    }
+    if (node_id > 1000) return node_id;
+    int node_before, node_after;
+    if (ahead) {
+        node_before = cur_route.get_node_by_position(cur_position - 1);
+        node_after = node_id;
+    }
+    else {
+        node_before = node_id;
+        node_after = cur_route.get_node_by_position(cur_position);
+    }
+    int best_charger = -1, least_dist = INF;
+    for (auto charger: near_chargers[node_id]) {
+        int cur_dist = (*dist_mat)[node_before][charger] + (*dist_mat)[charger][node_after];
+        if (cur_dist < least_dist) {
+            least_dist = cur_dist;
+            best_charger = charger;
+        }
+    }
+    return best_charger;
 }
 
-//
-//
-//void find_charger(Route &route, int &charger_index, int &charger_position, bool bin_direct) {
-//    charger_index = -1;
-//    int violation_pos = -1;
-//    check_distance_violation(route, &violation_pos); // 找到发生dist_rest小于0(violation)的位置
-//    if (violation_pos == -1) return ;
-//    auto violation_prior = route.route_seq.begin() + violation_pos - 1; // 指向violation前一个点的index
-//    int violation_prior_rest_dist = route.dist_rest[violation_pos - 1];
-//    vector<int> available_charger; // 可以到达的所有充电站
-//    for (int i = 1001; i <= 1100; i++) {
-//        if (dist_mat[*violation_prior][i] <= violation_prior_rest_dist)
-//            available_charger.push_back(i);
-//    }
-//    int min_dist = INT32_MAX;
-//    for (auto index : available_charger) {
-//        // 注意防范violation出现在第一个点和第二个点之间的情况, 只能在前一个点之后加, 但是如果violation出现在倒数第一个点, 没有问题
-//        if (bin_direct && violation_pos > 1 && !check_distance_violation(route, index, violation_pos-1) && !check_time_violation(route, index, violation_pos-1)) {
-//            int delta = -dist_mat[*(violation_prior-1)][*violation_prior] + dist_mat[*(violation_prior-1)][index] + dist_mat[index][*violation_prior];
-//            if (delta < min_dist) {
-//                charger_index = index;
-//                charger_position = violation_pos - 1;
-//                min_dist = delta;
-//            }
-//        }
-//
-//        if (!check_distance_violation(route, index, violation_pos) && !check_time_violation(route, index, violation_pos)) {
-//            int delta = -dist_mat[*violation_prior][*(violation_prior+1)] + dist_mat[*violation_prior][index] + dist_mat[index][*(violation_prior + 1)];
-//            if (delta < min_dist) {
-//                charger_index = index;
-//                charger_position = violation_pos;
-//                min_dist = delta;
-//            }
-//        }
-//    }
-//}
-//
+
 //void remove_redundant_charger(Route &route, int position) {
 //    int charger_index;
 //    for (++position; position < route.route_seq.size(); ++position) {
