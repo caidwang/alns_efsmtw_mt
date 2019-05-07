@@ -14,7 +14,6 @@ void SequentialNodeInsertion::repairSolution(ISolution &sol) {
     auto &routes = newS.getRoutes();
     for (auto it: newS.getNonInserted()) {
         int cur_route, cur_position;
-        double cur_cost;
         NodePositionRCL rcl(5);
         for (cur_route = 0; cur_route < routes.size(); ++cur_route) {
             int length = routes[cur_route].size(); // 插入位置可以从1到length-1
@@ -24,10 +23,10 @@ void SequentialNodeInsertion::repairSolution(ISolution &sol) {
             }
         }
         auto best = rcl.randGet();
-        do_insert_from_info(routes[cur_route], best, it);
+        if (best.cur_route >= routes.size()) throw runtime_error("out of range.");
+        do_insert_from_info(routes[best.cur_route], best, it);
     }
     newS.getNonInserted().clear();
-//    assert(newS.isFeasible());
 }
 
 

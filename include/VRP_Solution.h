@@ -10,6 +10,7 @@
 #include "ALNS_inc.h"
 #include "logistics.hpp"
 
+
 class VRP_Solution: public ISolution {
     friend void read_vrp_solution_from_file(const std::string &file_path, VRP_Solution &solution);
 public:
@@ -45,7 +46,7 @@ public:
     std::vector<int> &getNonInserted();
     int getNNodes() const;
     int getNCustomers() const;
-    void remove(std::vector<int> remove_list);
+    void remove(std::vector<int> &remove_list);
 
 private:
     const std::vector<Node> *node_list;

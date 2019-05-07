@@ -6,7 +6,7 @@
 #include "ALNS_inc.h"
 #include <vector>
 #include <VRP_Solution.h>
-#include <LS_Relocate.h>
+#include <LS_InterRelocate.h>
 #include <LS_InsertRemoveRS.h>
 #include "logistics.hpp"
 #include "util.hpp"
@@ -16,13 +16,12 @@
 #include "RegretInsertion.h"
 #include "LS_Two_opt.h"
 #include "MyLocalSearchManager.h"
-
 using namespace std;
 void test_route();
 void test_concatenate();
 void test_evaluate_coherent(Route &route);
 
-int main() {
+int main1() {
     srand(time(nullptr));
     // 0. 准备数据 读dist,time的矩阵 读节点信息 计算relatedness
     const int depot = 0;
@@ -44,24 +43,32 @@ int main() {
     // 从缓存文件读取初始解 todo 根据文件时间的新旧, 选择最新的文件建初始解
     read_vrp_solution_from_file("../data/init_solution_00", initialSol);
 
-    int randomQ = 50;
-    vector<int> removeList;
-    set<int> removeSet;
-    while(removeList.size() < randomQ) {
-        int node = 1 + rand() % initialSol.getNCustomers();
-        if (removeSet.find(node) == removeSet.end()) {
-            removeSet.insert(node);
-            removeList.push_back(node);
-        }
-    }
-    initialSol.remove(removeList); // todo implement remove
 //    RandomRemoval randR("Random Removal");
 //    RandomAndRelatedRemoval randRelR("Random and Related Removal", relatedness);
-
-//    randR.destroySolution(initialSol);
+//    SequentialNodeInsertion sequentialI("Sequential Node Insertion");
+//    RegretInsertion regret3I("Regret-2 Insertion", 2);
+//    randRelR.destroySolution(initialSol);
+//    regret3I.repairSolution(initialSol);
+    cout << initialSol.getObjectiveValue() << " " << initialSol.getPenalizedObjectiveValue() << endl;
+    LS_Two_opt lsTwoOpt("two opt");
+    LS_InterRelocate lsRelocate("relocate");
+    cout << lsRelocate.performLocalSearch(initialSol) << endl;
+    cout << initialSol.getObjectiveValue() << " " << initialSol.getPenalizedObjectiveValue() << endl;
+    cout << initialSol.isFeasible() << endl;
 //    print_solution(initialSol, cout);
 
-
+    vector<int> a(1001, 0);
+    for (auto &route: initialSol.getRoutes())
+        for (auto item : route.route_seq) {
+            if (item <= 1000)
+                ++a[item];
+    }
+    cout << "print vec" << endl;
+    for (int i = 1; i < a.size(); ++i) {
+        if (a[i] > 1) cout <<"MORE: " << i << " "<< a[i] <<  " ";
+        if (a[i] < 1) cout << "LESS: " << i << " " << a[i] << " ";
+    }
+    cout << endl;
     return 0;
 }
 

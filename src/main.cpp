@@ -2,7 +2,7 @@
 #include "ALNS_inc.h"
 #include <vector>
 #include <VRP_Solution.h>
-#include <LS_Relocate.h>
+#include <LS_InterRelocate.h>
 #include <LS_InsertRemoveRS.h>
 #include "logistics.hpp"
 #include "util.hpp"
@@ -15,7 +15,7 @@
 
 using namespace std;
 
-int main1() {
+int main() {
     srand(time(nullptr));
     // 0. 准备数据 读dist,time的矩阵 读节点信息 计算relatedness
     const int depot = 0;
@@ -51,37 +51,34 @@ int main1() {
 
 
     ALNS_Parameters alnsParam;
-    alnsParam.loadXMLParameters("./param.xml");
+    alnsParam.loadXMLParameters("../param.xml");
 
     CoolingSchedule_Parameters csParam(alnsParam);
-    csParam.loadXMLParameters("./param.xml");
+    csParam.loadXMLParameters("../param.xml");
     ICoolingSchedule* cs = CoolingScheduleFactory::makeCoolingSchedule(dynamic_cast<ISolution&>(initialSol),csParam);
     SimulatedAnnealing sa(*cs);
-
 
 
     OperatorManager opMan(alnsParam);
     opMan.addDestroyOperator(dynamic_cast<ADestroyOperator&>(randR));
     opMan.addDestroyOperator(dynamic_cast<ADestroyOperator&>(randRelR));
-//    opMan.addDestroyOperator(dynamic_cast<ADestroyOperator&>(historyR));
     opMan.addRepairOperator(dynamic_cast<ARepairOperator&>(sequentialI));
     opMan.addRepairOperator(dynamic_cast<ARepairOperator&>(regret2I));
     opMan.addRepairOperator(dynamic_cast<ARepairOperator&>(regret3I));
     SimpleBestSolutionManager bestSM(alnsParam);
-    MyLocalSearchManager simpleLsManager(alnsParam);
+    MyLocalSearchManager myLsManager(alnsParam);
 
-    LS_Two_opt lsTwoOpt("My LS");
-    LS_Relocate lsRelocate("Ls Relocated");
+    LS_Two_opt lsTwoOpt("My LS Two Opt");
+    LS_InterRelocate lsRelocate("Ls Relocated");
     LS_InsertRemoveRS lsInsertRemoveRs("LS InsertRemove RS");
-    simpleLsManager.addLocalSearchOperator(dynamic_cast<ILocalSearch&>(lsTwoOpt));
-    simpleLsManager.addLocalSearchOperator(dynamic_cast<ILocalSearch&>(lsRelocate));
-    simpleLsManager.addLocalSearchOperator(dynamic_cast<ILocalSearch&>(lsInsertRemoveRs));
+    myLsManager.addLocalSearchOperator(dynamic_cast<ILocalSearch&>(lsTwoOpt));
+    myLsManager.addLocalSearchOperator(dynamic_cast<ILocalSearch&>(lsRelocate));
+//    myLsManager.addLocalSearchOperator(dynamic_cast<ILocalSearch&>(lsInsertRemoveRs));
 
-    ALNS alns("efsmtw",dynamic_cast<ISolution&>(initialSol),dynamic_cast<IAcceptanceModule&>(sa),alnsParam,dynamic_cast<AOperatorManager&>(opMan),dynamic_cast<IBestSolutionManager&>(bestSM),dynamic_cast<ILocalSearchManager&>(simpleLsManager));
+    ALNS alns("efsmtw",dynamic_cast<ISolution&>(initialSol),dynamic_cast<IAcceptanceModule&>(sa),alnsParam,dynamic_cast<AOperatorManager&>(opMan),dynamic_cast<IBestSolutionManager&>(bestSM),dynamic_cast<ILocalSearchManager&>(myLsManager));
 
 //    alns.addUpdatable(dynamic_cast<IUpdatable&>(historyR));
 
     alns.solve();
-    delete cs;
     return 0;
 }

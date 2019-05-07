@@ -174,7 +174,7 @@ public:
         if (RCL.size() > maxNumber) RCL.pop();
     }
     InsertInfo randGet() {
-        int index = std::max(static_cast<unsigned long>(rand() % maxNumber), RCL.size() -1);
+        int index = std::min(static_cast<unsigned long>(rand() % maxNumber), RCL.size() -1);
         while (index) {
             RCL.pop();
             --index;
@@ -201,5 +201,7 @@ void do_insert_from_info(Route &route, InsertInfo &info, int node_id);
 int find_best_charger(Route &cur_route, int cur_position, int node_id, bool ahead,
                       const std::vector<std::vector<int>> *dist_mat);
 
+
+bool remove_list_is_unique(std:: vector<int> &rList);
 
 # endif //LOGISTICS_H

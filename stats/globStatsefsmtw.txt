@@ -1,0 +1,2 @@
+iterations	timeStamps	Destroy Operator	Recreate Operator	New Cost	Current Cost	Best Cost	Cumulative Known Solutions
+1	0.527803	Random Removal	Sequential Node Insertion	329644	329644	329644	1

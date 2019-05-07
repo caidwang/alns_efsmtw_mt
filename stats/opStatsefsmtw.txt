@@ -1,0 +1,1 @@
+time stamp	weight Sequential Node Insertion	CallsSequential Node Insertion	weight Random Removal	CallsRandom Removal	

@@ -9,7 +9,7 @@ class RelatednessLess {
 public:
     RelatednessLess(int base, const std::vector<std::vector<int>> &table) : base (base), table(table) {}
     bool operator()(int i, int j) {
-        return table[base][i] > table[base][j];
+        return table[base][i] < table[base][j];
     }
 private:
     const std::vector<std::vector<int>> &table;
@@ -38,6 +38,12 @@ int Relatedness::get_relatedness(int node1, int node2) const {
     return relatedness_table[node1][node2];
 }
 
+/**
+ * 返回与base_node的relatedness最小的num_of_candidate中的随机一个
+ * @param base_node
+ * @param num_of_candidate
+ * @return
+ */
 int Relatedness::related_RCL(int base_node, int num_of_candidate) const {
     RelatednessLess rLess(base_node, relatedness_table);
     vector<int> RCL;

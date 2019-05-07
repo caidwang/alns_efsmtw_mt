@@ -138,33 +138,29 @@ double VRP_Solution::getObjectiveValue() {
     return object;
 }
 
-void VRP_Solution::remove(std::vector<int> remove_list) {
-    // todo 加入信息 进行重构
+void VRP_Solution::remove(std::vector<int> &remove_list) {
+    // todo 加入节点的位置信息 进行重构
+    assert(remove_list_is_unique(remove_list));
     set<int> waiting_for_remove;
     for (auto node: remove_list) {
         nonInserted.push_back(node);
         waiting_for_remove.insert(node);
     }
     for (auto &route : routes) {
-        for (auto it = route.route_seq.begin(); it != route.route_seq.end(); ++it) {
-            auto set_it = waiting_for_remove.find(*it);
-            if (set_it != waiting_for_remove.end()) {
-                waiting_for_remove.erase(set_it);
-                route.lazy_remove(it - route.route_seq.begin());
+        bool changed = false;
+        for (int i = 1; i < route.size() - 1; ++i) {
+//            auto set_it = waiting_for_remove.find(*it);
+            int node_id = route.get_node_by_position(i);
+            if (waiting_for_remove.find(node_id) != waiting_for_remove.end()) {
+                changed = true;
+                waiting_for_remove.erase(node_id);
+                route.lazy_remove(i);
+                --i;
             }
         }
-        route.update(0, route.size());
+        if (changed) route.update(0, route.size());
     }
-#ifndef NDEBUG
-    if (!waiting_for_remove.empty()) {
-        for (auto i : waiting_for_remove) {
-            cout << i << " ";
-        }
-        cout << endl;
-    }
-
     assert(waiting_for_remove.empty());
-#endif
 }
 
 

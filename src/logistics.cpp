@@ -273,6 +273,7 @@ InsertInfo evaluate_insert_with_rs(Route &route, int cur_route, int cur_position
     if (cost_p < info.cost) {
         info.RS_ahead = -1;
         info.RS_post = sr_id_post;
+        info.cost = cost_p;
     }
     if (cost_both < info.cost) {
         info.RS_post = sr_id_post;
@@ -360,7 +361,7 @@ int find_best_charger(Route &cur_route, int cur_position, int node_id, bool ahea
                 near_chargers[i].push_back(j);
             }
             sort(near_chargers[i].begin(), near_chargers[i].end(), DistLess(i, (dist_mat)));
-            near_chargers.resize(5);
+            near_chargers[i].resize(5);
         }
     }
     if (node_id > 1000) return node_id;
@@ -382,6 +383,17 @@ int find_best_charger(Route &cur_route, int cur_position, int node_id, bool ahea
         }
     }
     return best_charger;
+}
+
+bool remove_list_is_unique(std::vector<int> &rList) {
+    vector<int> cnt(1001, 0);
+    for (auto item : rList) {
+        ++cnt[item];
+    }
+    for (int i = 1; i < cnt.size(); ++i) {
+        if (cnt[i] > 1) return false;
+    }
+    return true;
 }
 
 

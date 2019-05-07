@@ -8,9 +8,8 @@
 using namespace std;
 
 void RegretInsertion::repairSolution(ISolution &sol) {
-#ifndef NDEBUG
-    cout << __func__ << ends;
-    time_t start = time(nullptr);
+#ifdef CAL_TIME
+    time_t start = clock();
 #endif
     auto &newS = dynamic_cast<VRP_Solution &>(sol);
     int num_of_routes = newS.getRoutes().size();
@@ -40,7 +39,7 @@ void RegretInsertion::repairSolution(ISolution &sol) {
         calculate_regret_value(pos_cost, regret_value);
         // 找到regret value最大的未插入的点
         int hurriest_node = -1;
-        double hurriest_cost = 0;
+        double hurriest_cost = -1;
         for (int i = 0; i < num_of_nodes; ++i) {
             if (!visited[i] && regret_value[i] > hurriest_cost) {
                 hurriest_cost = regret_value[i];
@@ -50,6 +49,7 @@ void RegretInsertion::repairSolution(ISolution &sol) {
         if (hurriest_node == -1) break;
         // 插入最急的点 注意hurriest的id是not_insert的id
         auto &info_for_insert = pos_cost[hurriest_node][0];
+        if (info_for_insert.cur_route >= routes.size()) throw runtime_error("out of range.");
         do_insert_from_info(routes[info_for_insert.cur_route], info_for_insert, not_insert[hurriest_node]);
         visited[hurriest_node] = true;
 
@@ -61,9 +61,9 @@ void RegretInsertion::repairSolution(ISolution &sol) {
         if (visited[i] == false) nonInsertNew.push_back(not_insert[i]);
     }
     not_insert = nonInsertNew;
-#ifndef NDEBUG
-    time_t end_time = time(nullptr);
-    cout << " Run time is " << end_time - start << endl;
+#ifdef CAL_TIME
+    time_t end_time = clock();
+    cout << __func__ << " Run time is " << static_cast<double>(end_time - start) / CLOCKS_PER_SEC << endl;
 #endif
 }
 
@@ -71,7 +71,11 @@ void RegretInsertion::update_position_cost(
         std::vector<int> &NonInsert,
         std::vector<Route> &routes,
         std::vector<std::vector<InsertInfo>> &pos_cost) {
-    for (int id_in_nonInsert = 1; id_in_nonInsert < NonInsert.size(); ++id_in_nonInsert) {
+    for(auto &i : pos_cost)
+        for (auto &j: i)
+            j.cost = INF;
+
+    for (int id_in_nonInsert = 0; id_in_nonInsert < NonInsert.size(); ++id_in_nonInsert) {
         if (visited[id_in_nonInsert]) continue; // 如果已经访问过的 就不更新
         // 否则对每个路径找到使得cost最小的插入位置 记录插入信息
         for (int route_id = 0; route_id < routes.size(); ++route_id) {
@@ -93,7 +97,7 @@ inline void RegretInsertion::calculate_regret_value(std::vector<std::vector<Inse
         if (!visited[i]) {
             sort(pos_cost[i].begin(), pos_cost[i].end(), RCLLess());
             for (int j = 1; j < k; ++j) {
-                regret_value[i] += pos_cost[i][j].cost - pos_cost[i][0].cost;
+                regret_value[i] += (pos_cost[i][j].cost - pos_cost[i][0].cost);
             }
         }
     }
