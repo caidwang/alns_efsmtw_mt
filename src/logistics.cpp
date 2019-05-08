@@ -255,6 +255,10 @@ int Route::get_start_time() const {
     return forward.back().E;
 }
 
+int Route::get_waiting_time() const {
+    return forward.back().WT;
+}
+
 
 // 针对每个节点在每个位置的插入, 进行四种尝试 {v}, {f,v}, {v, g}, {f, v, g}
 // 返回带惩罚的cost最小的插入方式的info

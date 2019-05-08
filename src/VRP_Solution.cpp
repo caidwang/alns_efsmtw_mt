@@ -111,6 +111,7 @@ void read_vrp_solution_from_file(const std::string &file_path, VRP_Solution &sol
         }
         // todo solution 中的其他属性 还要更新
     }
+    else __throw_ios_failure("file not exists.");
 }
 
 bool VRP_Solution::isFeasible() {

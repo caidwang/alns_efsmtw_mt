@@ -96,6 +96,7 @@ public:
     int get_node_by_position(int position) const;
     int get_back_time() const;
     int get_start_time() const;
+    int get_waiting_time() const;
     double get_penalized_cost() {return penalizedCost; }
     double get_object_cost() {return objCost; }
 

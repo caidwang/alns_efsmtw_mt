@@ -1,1 +1,1 @@
-time stamp	weight Sequential Node Insertion	CallsSequential Node Insertion	weight Random Removal	CallsRandom Removal	
+time stamp	weight Sequential Node Insertion	CallsSequential Node Insertion	weight Regret-2 Insertion	CallsRegret-2 Insertion	weight Regret-3 Insertion	CallsRegret-3 Insertion	weight Random Removal	CallsRandom Removal	weight Random and Related Removal	CallsRandom and Related Removal	

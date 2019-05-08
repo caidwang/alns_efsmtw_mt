@@ -2,6 +2,9 @@
 #include <iostream>
 #include <sstream>
 #include <cmath>
+#include <cstdlib>
+#include <unistd.h>
+
 using namespace std;
 static const int N = 1101;
 static const float lng_depot = 52423.045871259856;
@@ -111,12 +114,12 @@ void print_node_list(vector<Node> &list, int begin, int end) {
 
 // 打印格式
 // vehicle_id, vehicle_type, id->id->id, start_time, back_time, total_dist
-void print_solution(VRP_Solution &solution, ostream &out) {
+void print_solution(VRP_Solution &solution, ostream &out, bool debug) {
     auto &route_list = solution.getRoutes();
-#ifndef NDEBUG
-    cout << "in print_solution, number of routes is " << route_list.size()
-    << ", the solution is " << (solution.isFeasible() ? "feasible." : "unfeasible.") << endl;
-#endif
+    if (debug) {
+        cout << "in print_solution, number of routes is " << route_list.size()
+             << ", the solution is " << (solution.isFeasible() ? "feasible." : "unfeasible.") << endl;
+    }
     for (const auto &route : route_list) {
         bool start = true;
         out << route.vehicle.get_vehicle_id() << "," << route.vehicle.get_type() << ",";
@@ -132,7 +135,7 @@ void print_solution(VRP_Solution &solution, ostream &out) {
         out << "," << route.get_start_time() << ","
         << route.get_back_time() << ","
         << route.total_dist << ","
-        << "0" // waiting time.
+        << route.get_waiting_time() // waiting time.
         << endl;
     }
 }
@@ -157,6 +160,41 @@ void analyse_result(const vector<Route> &route_list) {
     }
 }
 
+bool lastest_modified_file(const char *dir_name,string & name) {
+    DIR *dirp;
+    struct dirent *dp;
+    char pwd[200];
+    getcwd(pwd, 200);
+    chdir(dir_name);
+    bool file_exist = false;
+    dirp = opendir(dir_name);
+    timespec mtime{0,0};
+
+    while ((dp = readdir(dirp)) != NULL) {
+        struct stat stat_buf;
+        lstat(dp->d_name, &stat_buf);
+//        cout << dp->d_name << stat_buf.st_mtim.tv_sec << endl;
+        if (dp->d_type != DT_DIR && stat_buf.st_ctim.tv_sec > mtime.tv_sec) {
+            file_exist =true;
+            name = dp->d_name;
+            mtime = stat_buf.st_mtim;
+        }
+    }
+    (void) closedir(dirp);
+    chdir(pwd);
+    return file_exist;
+}
+
+void write_answer(ISolution *sol) {
+    time_t now = time(nullptr);
+    tm *local = localtime(&now);
+    char writeFileName[200];
+    sprintf(writeFileName, "../results/solution_%02d_%02d_%02d_%02d", local->tm_mday,local->tm_hour, local->tm_min, local->tm_sec);
+    ofstream fw(writeFileName);
+    if (fw) {
+        print_solution(dynamic_cast<VRP_Solution &>(*sol), fw, false);
+    }
+}
 //
 //int cal_total_cost(const vector<Route> &route_list, vector<vector<int>> &dist_mat, vector<vector<int>> &time_mat, vector<Node> &node_list) {
 //    int total = 0, waiting_time;

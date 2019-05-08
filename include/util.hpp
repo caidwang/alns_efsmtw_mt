@@ -3,6 +3,8 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <dirent.h>
+#include <sys/stat.h>
 #include "logistics.hpp"
 #include "VRP_Solution.h"
 
@@ -40,7 +42,9 @@ void print_mat(std::vector<std::vector<int> > &mat);
 void print_node_list(std::vector<Node> &, int, int);
 
 // 打印结果 形式为第一行 总路径数n, 之后n行id->id->id 车辆类型
-void print_solution(VRP_Solution &solution, std::ostream &out);
+void print_solution(VRP_Solution &solution, std::ostream &out, bool debug);
+bool lastest_modified_file(const char *dir_name,std::string & name);
+void write_answer(ISolution *sol);
 // 打印结果 形式为第一行 总路径数n,
 // 之后n行 车辆类型 车辆id 路径载重率 路径容量率 id->id->id
 void analyse_result(const std::vector<Route> &route_list);

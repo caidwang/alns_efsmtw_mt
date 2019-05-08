@@ -41,7 +41,7 @@ int main1() {
     VRP_Solution initialSol(&node_list, &dist_mat, &time_mat, n_customer, total_nodes);
 
     // 从缓存文件读取初始解 todo 根据文件时间的新旧, 选择最新的文件建初始解
-    read_vrp_solution_from_file("../data/init_solution_00", initialSol);
+    read_vrp_solution_from_file("../results/init_solution_00", initialSol);
 
 //    RandomRemoval randR("Random Removal");
 //    RandomAndRelatedRemoval randRelR("Random and Related Removal", relatedness);
@@ -52,7 +52,8 @@ int main1() {
     cout << initialSol.getObjectiveValue() << " " << initialSol.getPenalizedObjectiveValue() << endl;
     LS_Two_opt lsTwoOpt("two opt");
     LS_InterRelocate lsRelocate("relocate");
-    cout << lsRelocate.performLocalSearch(initialSol) << endl;
+    LS_InsertRemoveRS lsInsertRemoveRs("LS InsertRemove RS");
+    cout << lsInsertRemoveRs.performLocalSearch(initialSol) << endl;
     cout << initialSol.getObjectiveValue() << " " << initialSol.getPenalizedObjectiveValue() << endl;
     cout << initialSol.isFeasible() << endl;
 //    print_solution(initialSol, cout);

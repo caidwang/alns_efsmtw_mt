@@ -1,9 +1,9 @@
 <Parameters>
 	<ALNS>
-		<MaxNbIterations>1</MaxNbIterations>
-		<MaxRunTime>300</MaxRunTime>
-		<MaxNbIterationsNoImp>100</MaxNbIterationsNoImp>
-		<StoppingCriterion>ALL</StoppingCriterion>
+		<MaxNbIterations>100</MaxNbIterations>
+		<MaxRunTime>3000</MaxRunTime>
+		<MaxNbIterationsNoImp>1000</MaxNbIterationsNoImp>
+		<StoppingCriterion>MAX_IT_NO_IMP</StoppingCriterion>
 		<Noise>false</Noise>
 		<TimeSegmentIt>100</TimeSegmentIt>
 		<NbItBeforeReinit>1000</NbItBeforeReinit>
@@ -14,7 +14,7 @@
 		<MinimumWeight>1</MinimumWeight>
 		<MaximumWeight>20</MaximumWeight>
 		<ProbabilityOfNoise>0.5</ProbabilityOfNoise>
-		<AcKind>SA</AcKind>
+		<AcKind>DA</AcKind>
 		<ReloadFrequency>1000</ReloadFrequency>
 		<LogFrequency>1</LogFrequency>
 		<StatsGlobPath>../stats/globStats</StatsGlobPath>
@@ -27,10 +27,10 @@
 			<ForbiddenLSOperator>None</ForbiddenLSOperator>
 		</ForbiddenLSOperators>
 	</ALNS>
-	<CoolingSchedule>
-		<Kind>Exponential_mix</Kind>
-		<ExpPercentageKept>0.95</ExpPercentageKept>
-		<SetupPercentage>0.05</SetupPercentage>
-		<NbThresholds>100</NbThresholds>
-	</CoolingSchedule>
+<!--	<CoolingSchedule>-->
+<!--		<Kind>Exponential_mix</Kind>-->
+<!--		<ExpPercentageKept>0.95</ExpPercentageKept>-->
+<!--		<SetupPercentage>0.05</SetupPercentage>-->
+<!--		<NbThresholds>100</NbThresholds>-->
+<!--	</CoolingSchedule>-->
 </Parameters>

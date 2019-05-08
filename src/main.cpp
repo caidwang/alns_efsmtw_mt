@@ -4,6 +4,8 @@
 #include <VRP_Solution.h>
 #include <LS_InterRelocate.h>
 #include <LS_InsertRemoveRS.h>
+#include <fstream>
+#include <sstream>
 #include "logistics.hpp"
 #include "util.hpp"
 #include "RandomRemoval.h"
@@ -12,6 +14,7 @@
 #include "RegretInsertion.h"
 #include "LS_Two_opt.h"
 #include "MyLocalSearchManager.h"
+#include "DetermineAcceptance.h"
 
 using namespace std;
 
@@ -45,7 +48,10 @@ int main() {
     VRP_Solution initialSol(&node_list, &dist_mat, &time_mat, n_customer, total_nodes);
 
     // 从缓存文件读取初始解 todo 根据文件时间的新旧, 选择最新的文件建初始解
-    read_vrp_solution_from_file("../data/init_solution_00", initialSol);
+    string fileName;
+     if (!lastest_modified_file("../results", fileName)) throw runtime_error("no file in results.");
+    string path = "../results/";
+    read_vrp_solution_from_file(path + fileName, initialSol);
     // 保证初始解可行
     sequentialI.repairSolution(dynamic_cast<ISolution&>(initialSol));
 
@@ -53,10 +59,11 @@ int main() {
     ALNS_Parameters alnsParam;
     alnsParam.loadXMLParameters("../param.xml");
 
-    CoolingSchedule_Parameters csParam(alnsParam);
-    csParam.loadXMLParameters("../param.xml");
-    ICoolingSchedule* cs = CoolingScheduleFactory::makeCoolingSchedule(dynamic_cast<ISolution&>(initialSol),csParam);
-    SimulatedAnnealing sa(*cs);
+//    CoolingSchedule_Parameters csParam(alnsParam);
+//    csParam.loadXMLParameters("../param.xml");
+//    ICoolingSchedule* cs = CoolingScheduleFactory::makeCoolingSchedule(dynamic_cast<ISolution&>(initialSol),csParam);
+//    SimulatedAnnealing sa(*cs);
+    DetermineAcceptance da;
 
 
     OperatorManager opMan(alnsParam);
@@ -73,12 +80,14 @@ int main() {
     LS_InsertRemoveRS lsInsertRemoveRs("LS InsertRemove RS");
     myLsManager.addLocalSearchOperator(dynamic_cast<ILocalSearch&>(lsTwoOpt));
     myLsManager.addLocalSearchOperator(dynamic_cast<ILocalSearch&>(lsRelocate));
-//    myLsManager.addLocalSearchOperator(dynamic_cast<ILocalSearch&>(lsInsertRemoveRs));
+    myLsManager.addLocalSearchOperator(dynamic_cast<ILocalSearch&>(lsInsertRemoveRs));
 
-    ALNS alns("efsmtw",dynamic_cast<ISolution&>(initialSol),dynamic_cast<IAcceptanceModule&>(sa),alnsParam,dynamic_cast<AOperatorManager&>(opMan),dynamic_cast<IBestSolutionManager&>(bestSM),dynamic_cast<ILocalSearchManager&>(myLsManager));
+    ALNS alns("efsmtw",dynamic_cast<ISolution&>(initialSol),dynamic_cast<IAcceptanceModule&>(da),alnsParam,dynamic_cast<AOperatorManager&>(opMan),dynamic_cast<IBestSolutionManager&>(bestSM),dynamic_cast<ILocalSearchManager&>(myLsManager));
 
 //    alns.addUpdatable(dynamic_cast<IUpdatable&>(historyR));
 
     alns.solve();
+    auto sol = bestSM.getBestSols();
+    write_answer(sol.front());
     return 0;
 }
