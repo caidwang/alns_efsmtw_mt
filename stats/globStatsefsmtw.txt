@@ -1,2 +1,288 @@
 iterations	timeStamps	Destroy Operator	Recreate Operator	New Cost	Current Cost	Best Cost	Cumulative Known Solutions
-1	40.4336	Random and Related Removal	Regret-2 Insertion	262578	263009	263009	1
+1	17.5616	Random and Related Removal	Regret-3 Insertion	257636	257489	257489	1
+2	18.0078	Random and Related Removal	Sequential Node Insertion	268747	257489	257489	2
+3	18.4896	Random Removal	Sequential Node Insertion	269600	257489	257489	3
+4	18.9184	Random Removal	Sequential Node Insertion	269620	257489	257489	4
+5	19.3921	Random Removal	Sequential Node Insertion	270389	257489	257489	5
+6	19.8272	Random and Related Removal	Sequential Node Insertion	267359	257489	257489	6
+7	20.382	Random and Related Removal	Sequential Node Insertion	270478	257489	257489	7
+8	20.879	Random and Related Removal	Sequential Node Insertion	272627	257489	257489	8
+9	38.1031	Random and Related Removal	Regret-3 Insertion	258657	257489	257489	9
+10	38.5916	Random and Related Removal	Sequential Node Insertion	268797	257489	257489	10
+11	68.4246	Random Removal	Regret-3 Insertion	257848	257489	257489	11
+12	133.496	Random and Related Removal	Regret-3 Insertion	257189	254699	254699	12
+13	134.046	Random Removal	Sequential Node Insertion	270021	254699	254699	13
+14	134.471	Random and Related Removal	Sequential Node Insertion	266697	254699	254699	14
+15	134.951	Random Removal	Sequential Node Insertion	268723	254699	254699	15
+16	166.862	Random and Related Removal	Regret-2 Insertion	254863	254699	254699	16
+17	189.544	Random Removal	Regret-2 Insertion	255552	254699	254699	17
+18	207.274	Random Removal	Regret-3 Insertion	254789	254699	254699	18
+19	226.437	Random Removal	Regret-2 Insertion	254738	254699	254699	19
+20	226.988	Random Removal	Sequential Node Insertion	270676	254699	254699	20
+21	248.71	Random and Related Removal	Regret-2 Insertion	255012	254699	254699	21
+22	249.206	Random and Related Removal	Sequential Node Insertion	270190	254699	254699	22
+23	301.838	Random and Related Removal	Regret-3 Insertion	254448	254128	254128	23
+24	320.659	Random Removal	Regret-3 Insertion	254153	254128	254128	24
+25	321.107	Random and Related Removal	Sequential Node Insertion	267480	254128	254128	25
+26	341.245	Random Removal	Regret-3 Insertion	254136	254128	254128	26
+27	341.686	Random and Related Removal	Sequential Node Insertion	267406	254128	254128	27
+28	342.24	Random and Related Removal	Sequential Node Insertion	268316	254128	254128	28
+29	377.117	Random and Related Removal	Regret-2 Insertion	254206	254128	254128	29
+30	396.357	Random and Related Removal	Regret-2 Insertion	254332	254128	254128	30
+31	396.902	Random and Related Removal	Sequential Node Insertion	269410	254128	254128	31
+32	397.409	Random and Related Removal	Sequential Node Insertion	267180	254128	254128	32
+33	397.958	Random and Related Removal	Sequential Node Insertion	268759	254128	254128	33
+34	418.242	Random and Related Removal	Regret-2 Insertion	255531	254128	254128	34
+35	418.697	Random and Related Removal	Sequential Node Insertion	267676	254128	254128	35
+36	452.292	Random and Related Removal	Regret-2 Insertion	254580	254128	254128	36
+37	452.793	Random and Related Removal	Sequential Node Insertion	268038	254128	254128	37
+38	472.954	Random Removal	Regret-2 Insertion	254271	254128	254128	38
+39	499.107	Random Removal	Regret-2 Insertion	254531	254128	254128	39
+40	525.526	Random Removal	Regret-2 Insertion	254055	254011	254011	40
+41	544.715	Random and Related Removal	Regret-2 Insertion	254074	254011	254011	41
+42	545.112	Random Removal	Sequential Node Insertion	266355	254011	254011	42
+43	545.664	Random Removal	Sequential Node Insertion	270262	254011	254011	43
+44	546.207	Random and Related Removal	Sequential Node Insertion	270256	254011	254011	44
+45	570.427	Random Removal	Regret-2 Insertion	254023	254011	254011	45
+46	592.79	Random Removal	Regret-3 Insertion	254013	253913	253913	46
+47	615.165	Random and Related Removal	Regret-3 Insertion	254335	253913	253913	47
+48	639.872	Random and Related Removal	Regret-3 Insertion	256334	253913	253913	48
+49	673.787	Random and Related Removal	Regret-3 Insertion	254228	253913	253913	49
+50	697.332	Random and Related Removal	Regret-2 Insertion	254081	253913	253913	50
+51	724.254	Random and Related Removal	Regret-2 Insertion	253902	253856	253856	51
+52	755.254	Random and Related Removal	Regret-3 Insertion	254411	253856	253856	52
+53	755.643	Random Removal	Sequential Node Insertion	267080	253856	253856	53
+54	796.892	Random Removal	Regret-2 Insertion	253744	253619	253619	54
+55	797.316	Random Removal	Sequential Node Insertion	265381	253619	253619	55
+56	819.3	Random Removal	Regret-3 Insertion	254432	253619	253619	56
+57	849.504	Random Removal	Regret-3 Insertion	254005	253619	253619	57
+58	849.984	Random Removal	Sequential Node Insertion	266663	253619	253619	58
+59	850.435	Random Removal	Sequential Node Insertion	265063	253619	253619	59
+60	874.318	Random and Related Removal	Regret-2 Insertion	254128	253619	253619	60
+61	874.759	Random and Related Removal	Sequential Node Insertion	263664	253619	253619	61
+62	904.13	Random Removal	Regret-2 Insertion	254357	253619	253619	62
+63	904.536	Random Removal	Sequential Node Insertion	265181	253619	253619	63
+64	929.949	Random and Related Removal	Regret-2 Insertion	253783	253619	253619	64
+65	930.411	Random and Related Removal	Sequential Node Insertion	265275	253619	253619	65
+66	954.602	Random Removal	Regret-2 Insertion	254507	253619	253619	66
+67	955.041	Random Removal	Sequential Node Insertion	268388	253619	253619	67
+68	983.124	Random and Related Removal	Regret-3 Insertion	253675	253619	253619	68
+69	1013.64	Random and Related Removal	Regret-2 Insertion	253840	253619	253619	69
+70	1014.09	Random Removal	Sequential Node Insertion	267434	253619	253619	70
+71	1041.59	Random and Related Removal	Regret-3 Insertion	254321	253619	253619	71
+72	1042.09	Random and Related Removal	Sequential Node Insertion	269755	253619	253619	72
+73	1042.53	Random Removal	Sequential Node Insertion	265653	253619	253619	73
+74	1077.15	Random Removal	Regret-3 Insertion	254046	253619	253619	74
+75	1104.9	Random Removal	Regret-3 Insertion	254142	253619	253619	75
+76	1140.15	Random and Related Removal	Regret-2 Insertion	253901	253619	253619	76
+77	1165.22	Random and Related Removal	Regret-2 Insertion	254074	253619	253619	77
+78	1165.71	Random Removal	Sequential Node Insertion	265909	253619	253619	78
+79	1166.1	Random Removal	Sequential Node Insertion	263977	253619	253619	79
+80	1166.62	Random Removal	Sequential Node Insertion	272057	253619	253619	80
+81	1167.13	Random Removal	Sequential Node Insertion	267739	253619	253619	81
+82	1196.91	Random Removal	Regret-3 Insertion	254256	253619	253619	82
+83	1197.37	Random Removal	Sequential Node Insertion	268626	253619	253619	83
+84	1214.89	Random and Related Removal	Regret-3 Insertion	254989	253619	253619	84
+85	1236.61	Random and Related Removal	Regret-2 Insertion	253645	253619	253619	85
+86	1263.29	Random and Related Removal	Regret-3 Insertion	255213	253619	253619	86
+87	1285.03	Random and Related Removal	Regret-2 Insertion	254190	253619	253619	87
+88	1318.53	Random and Related Removal	Regret-2 Insertion	253968	253619	253619	88
+89	1353.89	Random and Related Removal	Regret-2 Insertion	255244	253619	253619	89
+90	1387.67	Random Removal	Regret-2 Insertion	256648	253619	253619	90
+91	1406.18	Random Removal	Regret-2 Insertion	253856	253619	253619	91
+92	1431.2	Random and Related Removal	Regret-3 Insertion	253635	253634	253634	92
+93	1453.25	Random Removal	Regret-3 Insertion	255545	253634	253634	93
+94	1487.88	Random Removal	Regret-2 Insertion	255884	253634	253634	94
+95	1507.1	Random and Related Removal	Regret-2 Insertion	254411	253634	253634	95
+96	1507.58	Random Removal	Sequential Node Insertion	268288	253634	253634	96
+97	1508.05	Random and Related Removal	Sequential Node Insertion	264667	253634	253634	97
+98	1533.08	Random and Related Removal	Regret-2 Insertion	254629	253634	253634	98
+99	1533.61	Random Removal	Sequential Node Insertion	270576	253634	253634	99
+100	1561.59	Random and Related Removal	Regret-3 Insertion	254580	253634	253634	100
+101	1578.71	Random Removal	Regret-3 Insertion	253685	253634	253634	101
+102	1597.87	Random and Related Removal	Regret-2 Insertion	253884	253634	253634	102
+103	1616.95	Random Removal	Regret-2 Insertion	255255	253634	253634	103
+104	1643.08	Random Removal	Regret-3 Insertion	253772	253634	253634	104
+105	1666.98	Random and Related Removal	Regret-2 Insertion	254663	253634	253634	105
+106	1688.82	Random and Related Removal	Regret-2 Insertion	253750	253634	253634	106
+107	1710.43	Random Removal	Regret-3 Insertion	254348	253634	253634	107
+108	1727.74	Random and Related Removal	Regret-2 Insertion	256112	253634	253634	108
+109	1756.2	Random and Related Removal	Regret-3 Insertion	255695	253634	253634	109
+110	1756.68	Random and Related Removal	Sequential Node Insertion	268504	253634	253634	110
+111	1776.17	Random Removal	Regret-2 Insertion	253668	253634	253634	111
+112	1803.89	Random Removal	Regret-2 Insertion	254012	253634	253634	112
+113	1804.47	Random and Related Removal	Sequential Node Insertion	269521	253634	253634	113
+114	1836.92	Random Removal	Regret-3 Insertion	256732	253634	253634	114
+115	1860.85	Random Removal	Regret-2 Insertion	253728	253634	253634	115
+116	1878.64	Random and Related Removal	Regret-3 Insertion	253637	253634	253634	116
+117	1879.09	Random Removal	Sequential Node Insertion	266490	253634	253634	117
+118	1914.44	Random and Related Removal	Regret-2 Insertion	253568	253634	253634	118
+119	1940.47	Random and Related Removal	Regret-3 Insertion	254864	253634	253634	119
+120	1970.58	Random and Related Removal	Regret-3 Insertion	254518	253634	253634	120
+121	1996.28	Random Removal	Regret-2 Insertion	254479	253634	253634	121
+122	2020.46	Random Removal	Regret-3 Insertion	253843	253634	253634	122
+123	2053.46	Random and Related Removal	Regret-3 Insertion	253834	253634	253634	123
+124	2074.12	Random and Related Removal	Regret-2 Insertion	253639	253634	253634	124
+125	2100.01	Random and Related Removal	Regret-3 Insertion	254668	253634	253634	125
+126	2100.48	Random and Related Removal	Sequential Node Insertion	268725	253634	253634	126
+127	2133.78	Random and Related Removal	Regret-3 Insertion	255287	253634	253634	127
+128	2134.3	Random Removal	Sequential Node Insertion	270827	253634	253634	128
+129	2159.14	Random and Related Removal	Regret-2 Insertion	254268	253634	253634	129
+130	2176.53	Random Removal	Regret-3 Insertion	255427	253634	253634	130
+131	2201.8	Random Removal	Regret-3 Insertion	254662	253634	253634	131
+132	2222.08	Random Removal	Regret-2 Insertion	254245	253634	253634	132
+133	2249.63	Random and Related Removal	Regret-2 Insertion	253826	253634	253634	133
+134	2276.98	Random and Related Removal	Regret-2 Insertion	254996	253634	253634	134
+135	2301.84	Random and Related Removal	Regret-2 Insertion	254603	253634	253634	135
+136	2331.49	Random and Related Removal	Regret-3 Insertion	254632	253634	253634	136
+137	2364.72	Random and Related Removal	Regret-2 Insertion	255203	253634	253634	137
+138	2398.47	Random and Related Removal	Regret-3 Insertion	254719	253634	253634	138
+139	2426.51	Random and Related Removal	Regret-2 Insertion	253681	253634	253634	139
+140	2455.76	Random and Related Removal	Regret-3 Insertion	254007	253634	253634	140
+141	2491.46	Random and Related Removal	Regret-2 Insertion	254475	253634	253634	141
+142	2516.03	Random Removal	Regret-3 Insertion	254777	253634	253634	142
+143	2516.59	Random and Related Removal	Sequential Node Insertion	269692	253634	253634	143
+144	2542.83	Random and Related Removal	Regret-3 Insertion	254341	253634	253634	144
+145	2564.18	Random and Related Removal	Regret-2 Insertion	254030	253634	253634	145
+146	2564.71	Random Removal	Sequential Node Insertion	270051	253634	253634	146
+147	2598.41	Random Removal	Regret-3 Insertion	255389	253634	253634	147
+148	2625.47	Random and Related Removal	Regret-2 Insertion	253998	253634	253634	148
+149	2647.62	Random and Related Removal	Regret-3 Insertion	254490	253634	253634	149
+150	2677.22	Random and Related Removal	Regret-3 Insertion	254157	253634	253634	150
+151	2708.71	Random Removal	Regret-2 Insertion	254098	253634	253634	151
+152	2744.04	Random and Related Removal	Regret-2 Insertion	254217	253634	253634	152
+153	2773.21	Random and Related Removal	Regret-3 Insertion	254809	253634	253634	153
+154	2789.95	Random Removal	Regret-3 Insertion	255154	253634	253634	154
+155	2790.42	Random Removal	Sequential Node Insertion	268992	253634	253634	155
+156	2813.7	Random and Related Removal	Regret-3 Insertion	255244	253634	253634	156
+157	2848.68	Random Removal	Regret-3 Insertion	253859	253634	253634	157
+158	2867.42	Random and Related Removal	Regret-3 Insertion	255951	253634	253634	158
+159	2901.79	Random and Related Removal	Regret-2 Insertion	254231	253634	253634	159
+160	2931.64	Random Removal	Regret-2 Insertion	255562	253634	253634	160
+161	2964.48	Random Removal	Regret-2 Insertion	253866	253634	253634	161
+162	2998.73	Random and Related Removal	Regret-3 Insertion	255393	253634	253634	162
+163	3020.55	Random Removal	Regret-2 Insertion	253790	253634	253634	163
+164	3049.23	Random Removal	Regret-2 Insertion	254367	253634	253634	164
+165	3078.54	Random and Related Removal	Regret-2 Insertion	253714	253634	253634	165
+166	3122.11	Random Removal	Regret-2 Insertion	253555	253272	253272	166
+167	3147.09	Random Removal	Regret-2 Insertion	253377	253272	253272	167
+168	3176.25	Random and Related Removal	Regret-2 Insertion	255022	253272	253272	168
+169	3211.12	Random and Related Removal	Regret-3 Insertion	254871	253272	253272	169
+170	3247.64	Random and Related Removal	Regret-3 Insertion	254570	253272	253272	170
+171	3268.91	Random Removal	Regret-2 Insertion	255015	253272	253272	171
+172	3290.54	Random Removal	Regret-3 Insertion	253291	253272	253272	172
+173	3314.93	Random and Related Removal	Regret-2 Insertion	253556	253272	253272	173
+174	3336.72	Random Removal	Regret-2 Insertion	254333	253272	253272	174
+175	3370.15	Random Removal	Regret-3 Insertion	253790	253272	253272	175
+176	3406.29	Random and Related Removal	Regret-2 Insertion	254011	253272	253272	176
+177	3439.98	Random Removal	Regret-2 Insertion	253857	253272	253272	177
+178	3470.63	Random and Related Removal	Regret-2 Insertion	253550	253272	253272	178
+179	3502.95	Random Removal	Regret-3 Insertion	253313	253272	253272	179
+180	3520.54	Random and Related Removal	Regret-3 Insertion	255715	253272	253272	180
+181	3520.93	Random Removal	Sequential Node Insertion	264176	253272	253272	181
+182	3546.4	Random and Related Removal	Regret-3 Insertion	254643	253272	253272	182
+183	3573.51	Random and Related Removal	Regret-2 Insertion	253381	253272	253272	183
+184	3600.62	Random Removal	Regret-2 Insertion	254830	253272	253272	184
+185	3601.13	Random Removal	Sequential Node Insertion	266495	253272	253272	185
+186	3631.53	Random and Related Removal	Regret-3 Insertion	255764	253272	253272	186
+187	3654.2	Random Removal	Regret-3 Insertion	254011	253272	253272	187
+188	3683.64	Random Removal	Regret-3 Insertion	253549	253272	253272	188
+189	3702.84	Random and Related Removal	Regret-3 Insertion	253462	253272	253272	189
+190	3736.64	Random Removal	Regret-3 Insertion	254085	253272	253272	190
+191	3762	Random Removal	Regret-2 Insertion	253584	253272	253272	191
+192	3795.02	Random Removal	Regret-2 Insertion	253917	253272	253272	192
+193	3824.6	Random and Related Removal	Regret-2 Insertion	254224	253272	253272	193
+194	3850.18	Random and Related Removal	Regret-3 Insertion	253251	253129	253129	194
+195	3879.56	Random Removal	Regret-2 Insertion	253494	253129	253129	195
+196	3907.9	Random and Related Removal	Regret-2 Insertion	254252	253129	253129	196
+197	3926.35	Random Removal	Regret-2 Insertion	253409	253129	253129	197
+198	3948.04	Random and Related Removal	Regret-2 Insertion	253452	253129	253129	198
+199	3974.2	Random Removal	Regret-2 Insertion	253355	253129	253129	199
+200	4005.1	Random and Related Removal	Regret-3 Insertion	253915	253129	253129	200
+201	4036.8	Random and Related Removal	Regret-2 Insertion	253579	253129	253129	201
+202	4054.62	Random and Related Removal	Regret-3 Insertion	253160	253129	253129	202
+203	4077.52	Random and Related Removal	Regret-2 Insertion	252932	252869	252869	203
+204	4113.23	Random and Related Removal	Regret-3 Insertion	254655	252869	252869	204
+205	4139.81	Random Removal	Regret-3 Insertion	253525	252869	252869	205
+206	4170.03	Random Removal	Regret-3 Insertion	252866	252869	252869	206
+207	4170.45	Random Removal	Sequential Node Insertion	267389	252869	252869	207
+208	4193.41	Random Removal	Regret-2 Insertion	252853	252782	252782	208
+209	4229.58	Random and Related Removal	Regret-3 Insertion	254241	252782	252782	209
+210	4230.02	Random Removal	Sequential Node Insertion	266166	252782	252782	210
+211	4230.44	Random Removal	Sequential Node Insertion	264191	252782	252782	211
+212	4254.28	Random Removal	Regret-2 Insertion	253510	252782	252782	212
+213	4276.59	Random Removal	Regret-3 Insertion	253673	252782	252782	213
+214	4310.27	Random Removal	Regret-2 Insertion	253747	252782	252782	214
+215	4329.87	Random and Related Removal	Regret-3 Insertion	253404	252782	252782	215
+216	4361.56	Random and Related Removal	Regret-2 Insertion	252779	252305	252305	216
+217	4382.17	Random and Related Removal	Regret-3 Insertion	253264	252305	252305	217
+218	4382.57	Random and Related Removal	Sequential Node Insertion	261925	252305	252305	218
+219	4405.91	Random Removal	Regret-3 Insertion	252443	252305	252305	219
+220	4440.06	Random Removal	Regret-3 Insertion	252814	252305	252305	220
+221	4459.93	Random and Related Removal	Regret-3 Insertion	252845	252305	252305	221
+222	4477.02	Random Removal	Regret-3 Insertion	253256	252305	252305	222
+223	4501.29	Random and Related Removal	Regret-3 Insertion	252925	252305	252305	223
+224	4519.05	Random and Related Removal	Regret-2 Insertion	252330	252305	252305	224
+225	4538.98	Random and Related Removal	Regret-3 Insertion	252539	252305	252305	225
+226	4557.13	Random and Related Removal	Regret-3 Insertion	252295	252305	252305	226
+227	4579.31	Random Removal	Regret-2 Insertion	252256	252240	252240	227
+228	4607.84	Random Removal	Regret-3 Insertion	253270	252240	252240	228
+229	4632.59	Random and Related Removal	Regret-3 Insertion	252945	252240	252240	229
+230	4662.57	Random and Related Removal	Regret-3 Insertion	252854	252240	252240	230
+231	4688.07	Random and Related Removal	Regret-3 Insertion	252942	252240	252240	231
+232	4705.49	Random Removal	Regret-3 Insertion	252240	252240	252240	232
+233	4726.36	Random Removal	Regret-3 Insertion	252332	252240	252240	233
+234	4747.89	Random Removal	Regret-3 Insertion	252519	252240	252240	234
+235	4775.85	Random and Related Removal	Regret-2 Insertion	254548	252240	252240	235
+236	4810.86	Random Removal	Regret-2 Insertion	252326	252240	252240	236
+237	4837.57	Random and Related Removal	Regret-2 Insertion	252219	252203	252203	237
+238	4854.9	Random and Related Removal	Regret-2 Insertion	253770	252203	252203	238
+239	4879.52	Random Removal	Regret-3 Insertion	253895	252203	252203	239
+240	4904.68	Random and Related Removal	Regret-2 Insertion	252543	252203	252203	240
+241	4936.88	Random and Related Removal	Regret-2 Insertion	252287	252203	252203	241
+242	4955.4	Random and Related Removal	Regret-3 Insertion	252879	252203	252203	242
+243	4977.18	Random and Related Removal	Regret-2 Insertion	252909	252203	252203	243
+244	4997.77	Random and Related Removal	Regret-2 Insertion	252558	252203	252203	244
+245	5021.27	Random and Related Removal	Regret-3 Insertion	253024	252203	252203	245
+246	5052.56	Random and Related Removal	Regret-3 Insertion	253687	252203	252203	246
+247	5070.62	Random Removal	Regret-2 Insertion	252980	252203	252203	247
+248	5090.18	Random and Related Removal	Regret-3 Insertion	252516	252203	252203	248
+249	5107.62	Random Removal	Regret-3 Insertion	252824	252203	252203	249
+250	5129.66	Random and Related Removal	Regret-2 Insertion	253124	252203	252203	250
+251	5164.13	Random and Related Removal	Regret-3 Insertion	253481	252203	252203	251
+252	5186.8	Random Removal	Regret-2 Insertion	252962	252203	252203	252
+253	5219.9	Random and Related Removal	Regret-2 Insertion	253257	252203	252203	253
+254	5242.73	Random and Related Removal	Regret-3 Insertion	254224	252203	252203	254
+255	5270.67	Random Removal	Regret-3 Insertion	253852	252203	252203	255
+256	5293.56	Random and Related Removal	Regret-3 Insertion	253984	252203	252203	256
+257	5322.13	Random Removal	Regret-2 Insertion	254537	252203	252203	257
+258	5346.32	Random Removal	Regret-2 Insertion	252960	252203	252203	258
+259	5366.22	Random and Related Removal	Regret-3 Insertion	252178	252203	252203	259
+260	5366.76	Random and Related Removal	Sequential Node Insertion	267092	252203	252203	260
+261	5392.02	Random Removal	Regret-2 Insertion	252179	252111	252111	261
+262	5414.83	Random and Related Removal	Regret-3 Insertion	254303	252111	252111	262
+263	5433.66	Random and Related Removal	Regret-3 Insertion	252209	252111	252111	263
+264	5469.77	Random and Related Removal	Regret-2 Insertion	252321	252111	252111	264
+265	5504.88	Random Removal	Regret-2 Insertion	252456	252111	252111	265
+266	5540.58	Random and Related Removal	Regret-2 Insertion	253198	252111	252111	266
+267	5573.66	Random and Related Removal	Regret-3 Insertion	252988	252111	252111	267
+268	5574.04	Random Removal	Sequential Node Insertion	266368	252111	252111	268
+269	5597.97	Random and Related Removal	Regret-2 Insertion	254028	252111	252111	269
+270	5622.5	Random Removal	Regret-2 Insertion	252414	252111	252111	270
+271	5651.05	Random Removal	Regret-2 Insertion	252711	252111	252111	271
+272	5673.38	Random and Related Removal	Regret-3 Insertion	252955	252111	252111	272
+273	5693.89	Random Removal	Regret-2 Insertion	252623	252111	252111	273
+274	5694.47	Random and Related Removal	Sequential Node Insertion	268133	252111	252111	274
+275	5728.58	Random Removal	Regret-3 Insertion	252573	252111	252111	275
+276	5752.01	Random Removal	Regret-2 Insertion	252086	252086	252086	276
+277	5783.51	Random Removal	Regret-2 Insertion	252768	252086	252086	277
+278	5813.94	Random Removal	Regret-2 Insertion	252114	252086	252086	278
+279	5843.31	Random and Related Removal	Regret-2 Insertion	252945	252086	252086	279
+280	5862.07	Random Removal	Regret-2 Insertion	254093	252086	252086	280
+281	5862.54	Random Removal	Sequential Node Insertion	264605	252086	252086	281
+282	5891.34	Random and Related Removal	Regret-3 Insertion	257262	252086	252086	282
+283	5922.86	Random and Related Removal	Regret-2 Insertion	254168	252086	252086	283
+284	5923.33	Random and Related Removal	Sequential Node Insertion	266352	252086	252086	284
+285	5954.61	Random and Related Removal	Regret-2 Insertion	254090	252086	252086	285
+286	5979.26	Random Removal	Regret-3 Insertion	253967	252086	252086	286
+287	6000.09	Random Removal	Regret-2 Insertion	252563	252086	252086	287

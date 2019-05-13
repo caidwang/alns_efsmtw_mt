@@ -185,12 +185,12 @@ bool lastest_modified_file(const char *dir_name,string & name) {
     return file_exist;
 }
 
-void write_answer(ISolution *sol) {
+void write_answer(ISolution *sol, const std::string &path) {
     time_t now = time(nullptr);
     tm *local = localtime(&now);
     char writeFileName[200];
-    sprintf(writeFileName, "../results/solution_%02d_%02d_%02d_%02d", local->tm_mday,local->tm_hour, local->tm_min, local->tm_sec);
-    ofstream fw(writeFileName);
+    sprintf(writeFileName, "solution_%02d_%02d_%02d_%02d", local->tm_mday,local->tm_hour, local->tm_min, local->tm_sec);
+    ofstream fw(path + writeFileName);
     if (fw) {
         print_solution(dynamic_cast<VRP_Solution &>(*sol), fw, false);
     }

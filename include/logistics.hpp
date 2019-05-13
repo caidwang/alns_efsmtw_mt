@@ -80,8 +80,30 @@ struct SeqProperty {
 };
 const SeqProperty make_property_from_node(const Node &n);
 
-struct PenaltyParam {
+class PenaltyParam {
+public:
+    PenaltyParam(double v = 10000, double w = 10000, double t = 100, double e = 10) : volumeW(v), weightW(w), timeWinW(t), energyW(e) , times(1){ }
+    void Raise(int time) {
+        times = time;
+    }
+    double getVolumeW() const {
+        return times * volumeW;
+    }
+    double getWeightW() const {
+        return times * weightW;
+    }
+    double getTimeWinW() const {
+        return times * timeWinW;
+    }
+    double getEnergyW() const {
+        return times * energyW;
+    }
+    void setDefault() {
+        times = 1;
+    }
+private:
     double volumeW, weightW, timeWinW, energyW;
+    int times;
 };
 
 class Route {
@@ -99,7 +121,7 @@ public:
     int get_waiting_time() const;
     double get_penalized_cost() {return penalizedCost; }
     double get_object_cost() {return objCost; }
-
+    void setPenalty(int times); // 设置penalty的倍数, 负责设置后新值的更新
     // route操作子
     void lazy_insert(int id, int position); // 懒惰插入 与update成对使用
     void insert(int id, int position); // 积极插入 O(n)复杂度

@@ -14,6 +14,7 @@
 #include "RegretInsertion.h"
 #include "LS_Two_opt.h"
 #include "MyLocalSearchManager.h"
+#include "MyBestSolutionManager.h"
 #include "DetermineAcceptance.h"
 
 using namespace std;
@@ -52,6 +53,13 @@ int main() {
      if (!lastest_modified_file("../results", fileName)) throw runtime_error("no file in results.");
     string path = "../results/";
     read_vrp_solution_from_file(path + fileName, initialSol);
+
+    VRP_Solution initialFSol(&node_list, &dist_mat, &time_mat, n_customer, total_nodes);
+
+    // 从缓存文件读取初始解 todo 根据文件时间的新旧, 选择最新的文件建初始解
+    if (!lastest_modified_file("../feasibleResults/", fileName)) throw runtime_error("no file in results.");
+    path = "../feasibleResults/";
+    read_vrp_solution_from_file(path + fileName, initialFSol);
     // 保证初始解可行
     sequentialI.repairSolution(dynamic_cast<ISolution&>(initialSol));
 
@@ -72,9 +80,13 @@ int main() {
     opMan.addRepairOperator(dynamic_cast<ARepairOperator&>(sequentialI));
     opMan.addRepairOperator(dynamic_cast<ARepairOperator&>(regret2I));
     opMan.addRepairOperator(dynamic_cast<ARepairOperator&>(regret3I));
-    SimpleBestSolutionManager bestSM(alnsParam);
-    MyLocalSearchManager myLsManager(alnsParam);
 
+    MyLocalSearchManager myLsManager(alnsParam);
+    MyBestSolutionManager bestSM(alnsParam, "../results/");
+    MyBestSolutionManager bestFSM(alnsParam, "../feasibleResults/");
+    // 这里用最新的可行解初始化bestFSM
+    bestFSM.isNewBestSolution(initialFSol);
+    // 用第一个可行解初始化bestFSM
     LS_Two_opt lsTwoOpt("My LS Two Opt");
     LS_InterRelocate lsRelocate("Ls Relocated");
     LS_InsertRemoveRS lsInsertRemoveRs("LS InsertRemove RS");
@@ -82,12 +94,13 @@ int main() {
     myLsManager.addLocalSearchOperator(dynamic_cast<ILocalSearch&>(lsRelocate));
     myLsManager.addLocalSearchOperator(dynamic_cast<ILocalSearch&>(lsInsertRemoveRs));
 
-    ALNS alns("efsmtw",dynamic_cast<ISolution&>(initialSol),dynamic_cast<IAcceptanceModule&>(da),alnsParam,dynamic_cast<AOperatorManager&>(opMan),dynamic_cast<IBestSolutionManager&>(bestSM),dynamic_cast<ILocalSearchManager&>(myLsManager));
+    ALNS alns("efsmtw",dynamic_cast<ISolution&>(initialSol),dynamic_cast<IAcceptanceModule&>(da),alnsParam,dynamic_cast<AOperatorManager&>(opMan),dynamic_cast<IBestSolutionManager&>(bestSM),
+              dynamic_cast<IBestSolutionManager&>(bestFSM),dynamic_cast<ILocalSearchManager&>(myLsManager));
 
 //    alns.addUpdatable(dynamic_cast<IUpdatable&>(historyR));
 
     alns.solve();
-    auto sol = bestSM.getBestSols();
-    write_answer(sol.front());
+    bestFSM.saveBestAnswer();
+    bestSM.saveBestAnswer();
     return 0;
 }

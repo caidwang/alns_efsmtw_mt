@@ -3,3 +3,6 @@ cmake-build-debug/
 .idea/
 data/
 Release/
+feasibleResults/
+results/
+code.md

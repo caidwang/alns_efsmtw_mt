@@ -7,14 +7,13 @@ vector<vector<int>> Route::dist_mat;
 vector<vector<int>> Route::time_mat;
 vector<Node> Route::node_list;
 
-Route::Route(int v_id, int v_type, int start_time) : vehicle(v_id, v_type), total_weight(0), total_volume(0), total_dist(0), start_time(start_time){
+Route::Route(int v_id, int v_type, int start_time) : vehicle(v_id, v_type), total_weight(0), total_volume(0), total_dist(0), start_time(start_time), penaltyParam() {
     route_seq.push_back(0);
     route_seq.push_back(0);
     for (int i = 0; i < 2; ++i) {
         forward.push_back(make_property_from_node(node_list[0]));
         backward.push_back(make_property_from_node(node_list[0]));
     }
-    penaltyParam = {1000, 1000, 10, 1};
     penalizedCost = 0;
     objCost = 0;
 }
@@ -96,7 +95,7 @@ void Route::update_whole_route() {
         backward[i] = property_concatenate(make_property_from_node(node_list[get_node_by_position(i)]), backward[i+1], get_node_by_position(i), get_node_by_position(i+1), vehicle.max_distance());
     }
     penalizedCost = calculate_penalized_cost(vehicle, total_dist, cnt_SR, total_weight, total_volume, forward.back(), penaltyParam); // todo 存在问题 这里计算的是最小waiting time的状态 和 start time 不符
-    objCost = calculate_penalized_cost(vehicle, total_dist, cnt_SR, total_weight, total_volume, forward.back(), PenaltyParam{0, 0, 0, 0});
+    objCost = calculate_penalized_cost(vehicle, total_dist, cnt_SR, total_weight, total_volume, forward.back(), PenaltyParam(0, 0, 0, 0));
 }
 
 /**
@@ -259,6 +258,13 @@ int Route::get_waiting_time() const {
     return forward.back().WT;
 }
 
+// 设置penalty的倍数, 负责设置后新值的更新
+void Route::setPenalty(int times) {
+    assert(times >= 1);
+    penaltyParam.Raise(times);
+    penalizedCost = calculate_penalized_cost(vehicle, total_dist, cnt_SR, total_weight, total_volume, forward.back(), penaltyParam);
+}
+
 
 // 针对每个节点在每个位置的插入, 进行四种尝试 {v}, {f,v}, {v, g}, {f, v, g}
 // 返回带惩罚的cost最小的插入方式的info
@@ -331,10 +337,10 @@ calculate_penalized_cost(const Vehicle &vehicle,
             + total_dist * vehicle.cost_pkm() / 1000.0
             + cnt_SR * CHARGE_COST
             + WAITING_COST * seqInfo.WT / 60.0
-            + seqInfo.EY * penaltyParam.energyW
-            + seqInfo.TW * penaltyParam.timeWinW
-            + max(0., total_weight - vehicle.max_weight()) * penaltyParam.weightW
-            + max(0., total_volume - vehicle.capacity()) * penaltyParam.volumeW;
+            + seqInfo.EY * penaltyParam.getEnergyW()
+            + seqInfo.TW * penaltyParam.getTimeWinW()
+            + max(0., total_weight - vehicle.max_weight()) * penaltyParam.getWeightW()
+            + max(0., total_volume - vehicle.capacity()) * penaltyParam.getVolumeW();
 }
 
 
@@ -401,82 +407,3 @@ bool remove_list_is_unique(std::vector<int> &rList) {
 }
 
 
-//void remove_redundant_charger(Route &route, int position) {
-//    int charger_index;
-//    for (++position; position < route.route_seq.size(); ++position) {
-//        if (route.route_seq[position] > 1000) {
-//            charger_index = route.route_seq[position];
-//            route.drop(position);
-//            if (check_distance_violation(route))
-//                route.insert(charger_index, position);
-//        }
-//    }
-//}
-//
-//bool last_time_order(const Node &n, const Node &v) {
-//    return n.last_time < v.last_time;
-//}
-//bool early_time_order(const Node &n, const Node &v) {
-//    return n.early_time < v.early_time;
-//}
-
-//void test_logistic() {
-//    // preprocess for test
-//    vector<vector<int>> dist_mat;
-//    int n = 6;
-//    for (int i = 0; i < n; ++i) {
-//        dist_mat.emplace_back();
-//        for (int j = 0; j < n; ++j) {
-//            dist_mat[i].push_back(1000);
-//        }
-//    }
-////    dist_mat
-////    {{1000, 1000, 1000, 1000, 1000, 1000,},
-////        {1000, 1000, 1000, 1000, 1000, 1000,},
-////        {1000, 1000, 1000, 1000, 1000, 1000,},
-////        {1000, 1000, 1000, 1000, 1000, 1000,},
-////        {1000, 1000, 1000, 1000, 1000, 1000,},
-////        {1000, 1000, 1000, 1000, 1000, 1000,},}
-//    vector<vector<int>> time_mat;
-//    for (int i = 0; i < n; ++i) {
-//        time_mat.emplace_back();
-//        for (int j = 0; j < n; ++j) {
-//            time_mat[i].push_back(60);
-//        }
-//    }
-////    time_mat
-////    {{60, 60, 60, 60, 60, 60,},
-////        {60, 60, 60, 60, 60, 60,},
-////        {60, 60, 60, 60, 60, 60,},
-////        {60, 60, 60, 60, 60, 60,},
-////        {60, 60, 60, 60, 60, 60,},
-////        {60, 60, 60, 60, 60, 60,},}
-//    vector<Node> node_list;
-//    node_list.emplace_back();
-//    node_list.emplace_back(1, 2, 0.1, 0.1, 480, 1440);
-//    node_list.emplace_back(2, 2, 0.1, 0.1, 480, 1440);
-//    node_list.emplace_back(3, 2, 0.1, 0.1, 480, 1440);
-//    node_list.emplace_back(4, 3, 0, 0, 0, 1440);
-//    Route::set_graph_info(dist_mat, time_mat, node_list);
-//
-//
-//}
-//
-//void test_route_insert() {
-//    Route route0(1, 1, 480);
-//    route0.insert(1, 1);
-//    route0.insert(2, 2);
-//    vector<int> time_seq0 {480, 570, 660, 720};
-//    vector<int> dist_seq0 {100000, 99000, 98000, 97000};
-//    assert(route0.leave_time == time_seq0);
-//    assert(route0.dist_rest == dist_seq0);
-//
-//}
-//void test_route_remove() {
-//    Route route(1, 1, 480);
-//
-//}
-//void test_route_drop() {
-//    Route route(1, 1, 480);
-//
-//}

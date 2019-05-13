@@ -44,6 +44,6 @@ bool LS_InterRelocate::performLocalSearch(ISolution &sol) {
             best_route_remove_from->remove(best_pos_remove_from);
             ++cnt_improved;
         }
-    } while(improvement && cnt_improved < 1000);
+    } while(improvement && cnt_improved < 100);
     return ever_improved;
 }

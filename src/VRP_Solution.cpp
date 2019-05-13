@@ -164,5 +164,11 @@ void VRP_Solution::remove(std::vector<int> &remove_list) {
     assert(waiting_for_remove.empty());
 }
 
+void VRP_Solution::setPenaltyMultiple(int times) {
+    for (auto &route: routes) {
+        route.setPenalty(times);
+    }
+}
+
 
 

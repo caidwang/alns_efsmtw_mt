@@ -47,6 +47,7 @@ public:
     int getNNodes() const;
     int getNCustomers() const;
     void remove(std::vector<int> &remove_list);
+    void setPenaltyMultiple(int times) override ; // 设置当前解的所有路径的penalty的倍数
 
 private:
     const std::vector<Node> *node_list;
