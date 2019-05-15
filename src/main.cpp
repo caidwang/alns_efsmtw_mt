@@ -31,8 +31,14 @@ int main() {
     read_dist_time_mat("../data/input_distance-time.txt", dist_mat, time_mat, total_nodes);
     vector<Node> node_list;
     read_nodes("../data/input_node.csv", node_list);
+
+    ALNS_Parameters alnsParam;
+    alnsParam.loadXMLParameters("../param.xml");
+
     Relatedness relatedness(node_list, dist_mat, time_mat, n_customer);
     Route::set_graph_info(dist_mat, time_mat, node_list);
+    // 设置带惩罚的目标函数的惩罚系数
+    PenaltyParam::initialPenaltyParam(alnsParam);
     // 1. 创建alns必要的对象和导入参数
     // 注册destroy repair操作子
 //    TSP_Best_Insert bestI("Best Insertion");
@@ -48,7 +54,7 @@ int main() {
     // 构造初始解
     VRP_Solution initialSol(&node_list, &dist_mat, &time_mat, n_customer, total_nodes);
 
-    // 从缓存文件读取初始解 todo 根据文件时间的新旧, 选择最新的文件建初始解
+    // 从缓存文件读取初始解 根据文件时间的新旧, 选择最新的文件建初始解
     string fileName;
      if (!lastest_modified_file("../results", fileName)) throw runtime_error("no file in results.");
     string path = "../results/";
@@ -56,7 +62,7 @@ int main() {
 
     VRP_Solution initialFSol(&node_list, &dist_mat, &time_mat, n_customer, total_nodes);
 
-    // 从缓存文件读取初始解 todo 根据文件时间的新旧, 选择最新的文件建初始解
+    // 从缓存文件读取初始可行解 根据文件时间的新旧, 选择最新的文件建初始解
     if (!lastest_modified_file("../feasibleResults/", fileName)) throw runtime_error("no file in results.");
     path = "../feasibleResults/";
     read_vrp_solution_from_file(path + fileName, initialFSol);
@@ -64,8 +70,7 @@ int main() {
     sequentialI.repairSolution(dynamic_cast<ISolution&>(initialSol));
 
 
-    ALNS_Parameters alnsParam;
-    alnsParam.loadXMLParameters("../param.xml");
+
 
 //    CoolingSchedule_Parameters csParam(alnsParam);
 //    csParam.loadXMLParameters("../param.xml");
@@ -98,7 +103,8 @@ int main() {
               dynamic_cast<IBestSolutionManager&>(bestFSM),dynamic_cast<ILocalSearchManager&>(myLsManager));
 
 //    alns.addUpdatable(dynamic_cast<IUpdatable&>(historyR));
-
+    PenaltyParam p;
+    cout << p.getWeightW() << p.getVolumeW() << p.getTimeWinW() << p.getEnergyW() << endl;
     alns.solve();
     bestFSM.saveBestAnswer();
     bestSM.saveBestAnswer();

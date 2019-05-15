@@ -7,6 +7,8 @@
 # include<algorithm>
 # include <iostream>
 # include<fstream>
+#include <alns/ALNS_Parameters.h>
+
 #ifndef INF
 #define INF 1000000
 #endif
@@ -82,7 +84,7 @@ const SeqProperty make_property_from_node(const Node &n);
 
 class PenaltyParam {
 public:
-    PenaltyParam(double v = 10000, double w = 10000, double t = 100, double e = 10) : volumeW(v), weightW(w), timeWinW(t), energyW(e) , times(1){ }
+    PenaltyParam(double v = vw, double w = ww, double t = tw, double e = ew) : volumeW(v), weightW(w), timeWinW(t), energyW(e) , times(1){ }
     void Raise(int time) {
         times = time;
     }
@@ -101,8 +103,10 @@ public:
     void setDefault() {
         times = 1;
     }
+    static void initialPenaltyParam(ALNS_Parameters &param);
 private:
     double volumeW, weightW, timeWinW, energyW;
+    static double vw, ww, tw,ew;
     int times;
 };
 

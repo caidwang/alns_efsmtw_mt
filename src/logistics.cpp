@@ -115,7 +115,7 @@ void Route::update_partial(int failure_position) {
 }
 
 int Route::get_back_time() const {
-    return start_time + forward.back().Dur;
+    return forward.back().E + forward.back().Dur;
 }
 
 void Route::lazy_remove(int position) {
@@ -404,6 +404,19 @@ bool remove_list_is_unique(std::vector<int> &rList) {
         if (cnt[i] > 1) return false;
     }
     return true;
+}
+
+double PenaltyParam::vw = 10000;
+double PenaltyParam::ww = 10000;
+double PenaltyParam::tw = 100;
+double PenaltyParam::ew = 10;
+
+// 设置penaltyParam的默认参数
+void PenaltyParam::initialPenaltyParam(ALNS_Parameters &param) {
+    vw = param.getVolumePenalty();
+    ww = param.getWeightPenalty();
+    tw = param.getTimeSegmentsIt();
+    ew = param.getEnergyPenalty();
 }
 
 
