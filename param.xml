@@ -1,9 +1,9 @@
 <Parameters>
 	<ALNS>
-		<MaxNbIterations>2</MaxNbIterations>
-		<MaxRunTime>6000</MaxRunTime>
+		<MaxNbIterations>500</MaxNbIterations>
+		<MaxRunTime>3000</MaxRunTime>
 		<MaxNbIterationsNoImp>1000</MaxNbIterationsNoImp>
-		<StoppingCriterion>ALL</StoppingCriterion>
+		<StoppingCriterion>MAX_IT</StoppingCriterion> <!--MAX_IT, MAX_RT, MAX_IT_NO_IMP, ALL-->
 		<Noise>false</Noise>
 		<TimeSegmentIt>100</TimeSegmentIt>
 		<NbItBeforeReinit>1000</NbItBeforeReinit>

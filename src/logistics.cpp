@@ -415,7 +415,7 @@ double PenaltyParam::ew = 10;
 void PenaltyParam::initialPenaltyParam(ALNS_Parameters &param) {
     vw = param.getVolumePenalty();
     ww = param.getWeightPenalty();
-    tw = param.getTimeSegmentsIt();
+    tw = param.getTimeWinPenalty();
     ew = param.getEnergyPenalty();
 }
 

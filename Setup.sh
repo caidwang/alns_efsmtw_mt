@@ -6,4 +6,5 @@ else
         echo "Directory exists."
 fi
 chmod 777 ./release/alns_efsmtw_mt
-cd release && ./alns_efsmtw_mt
+cd release
+nohup ./alns_efsmtw_mt > outlog &
