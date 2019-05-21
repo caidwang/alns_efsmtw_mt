@@ -60,6 +60,7 @@ int main() {
     string path = "../results/";
     read_vrp_solution_from_file(path + fileName, initialSol);
 
+    // 构造初始可行解
     VRP_Solution initialFSol(&node_list, &dist_mat, &time_mat, n_customer, total_nodes);
 
     // 从缓存文件读取初始可行解 根据文件时间的新旧, 选择最新的文件建初始解
@@ -104,7 +105,7 @@ int main() {
 
 //    alns.addUpdatable(dynamic_cast<IUpdatable&>(historyR));
     PenaltyParam p;
-    cout << p.getWeightW() << p.getVolumeW() << p.getTimeWinW() << p.getEnergyW() << endl;
+    cout << p.getWeightW() << " " << p.getVolumeW() << " " << p.getTimeWinW() << " " << p.getEnergyW() << endl;
     alns.solve();
     bestFSM.saveBestAnswer();
     bestSM.saveBestAnswer();

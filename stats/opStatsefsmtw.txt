@@ -1,1 +1,11 @@
 time stamp	weight Sequential Node Insertion	CallsSequential Node Insertion	weight Regret-2 Insertion	CallsRegret-2 Insertion	weight Regret-3 Insertion	CallsRegret-3 Insertion	weight Random Removal	CallsRandom Removal	weight Random and Related Removal	CallsRandom and Related Removal	
+2217.74	1	34	7.62	35	2.884	31	10.18	58	4.932	42	
+4830.45	1	6	20	64	4.5156	30	20	60	8.2788	40	
+7258.36	1	9	20	70	4.06404	21	20	68	7.45092	32	
+9874.07	1	2	20	81	4.20164	17	20	74	8.36983	26	
+12271.5	1	7	20	74	3.78147	19	20	64	10.9888	36	
+14722.4	1	4	20	84	3.40333	12	20	64	12.194	36	
+17383.9	1	3	20	81	3.06299	16	20	61	12.2226	39	
+19957	1	4	20	80	2.75669	16	20	72	14.0243	28	
+22455.4	1	5	20	80	2.96102	15	20	58	15.6039	42	
+25072.6	1	4	20	83	2.66492	13	20	52	17.4515	48	

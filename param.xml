@@ -1,6 +1,6 @@
 <Parameters>
 	<ALNS>
-		<MaxNbIterations>500</MaxNbIterations>
+		<MaxNbIterations>1000</MaxNbIterations>
 		<MaxRunTime>3000</MaxRunTime>
 		<MaxNbIterationsNoImp>1000</MaxNbIterationsNoImp>
 		<StoppingCriterion>MAX_IT</StoppingCriterion> <!--MAX_IT, MAX_RT, MAX_IT_NO_IMP, ALL-->
@@ -35,9 +35,9 @@
 <!--		<NbThresholds>100</NbThresholds>-->
 <!--	</CoolingSchedule>-->
 	<Penalty>
-		<volumePenalty>10000</volumePenalty>
-		<weightPenalty>10000</weightPenalty>
-		<timeWinPenalty>100</timeWinPenalty>
-		<energyPenalty>10</energyPenalty>
+		<volumePenalty>9000</volumePenalty>
+		<weightPenalty>9000</weightPenalty>
+		<timeWinPenalty>120</timeWinPenalty>
+		<energyPenalty>9</energyPenalty>
 	</Penalty>
 </Parameters>

@@ -21,7 +21,7 @@ void test_route();
 void test_concatenate();
 void test_evaluate_coherent(Route &route);
 
-int main1() {
+int main2() {
     srand(time(nullptr));
     // 0. 准备数据 读dist,time的矩阵 读节点信息 计算relatedness
     const int depot = 0;
