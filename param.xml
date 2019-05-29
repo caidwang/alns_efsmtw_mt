@@ -1,6 +1,6 @@
 <Parameters>
 	<ALNS>
-		<MaxNbIterations>1000</MaxNbIterations>
+		<MaxNbIterations>200</MaxNbIterations>
 		<MaxRunTime>3000</MaxRunTime>
 		<MaxNbIterationsNoImp>1000</MaxNbIterationsNoImp>
 		<StoppingCriterion>MAX_IT</StoppingCriterion> <!--MAX_IT, MAX_RT, MAX_IT_NO_IMP, ALL-->
