@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 11)
 # 添加动态链接库搜索目录
 link_directories(lib)
 # 设置静态链接库搜索目录
-include_directories(/home/wsc/code/optimism_projects/ALNS_framework/ALNS/alns-framework/trunk/src)
+include_directories(alns_framework/src)
 include_directories(include)
 # 将当前目录的所有cpp文件 赋给变量dir_srcs
 aux_source_directory(src DIR_SRCS)
