@@ -13,13 +13,9 @@
 #define INF 1000000
 #endif
 
-// Edge object
-//extern std::vector<std::vector<int> > time_mat;
-//extern std::vector<std::vector<int> > dist_mat;
-//extern std::vector<int> charger_near_customer;
 
 // Node object
-const int OPERATION_TIME = 30; // same for customer and charge_station.
+const int OPERATION_TIME = 30; // 客户节点和充电站操作时间相同
 const int CHARGE_COST = 50; // 一次
 const int WAITING_COST = 24; // 元/h
 class Node {
@@ -28,22 +24,23 @@ public:
     int type;
     float demand_weight{0}, demand_volume{0};
     int early_time, last_time;
-    Node(): id(0), type{1}, early_time(480), last_time(1440) {};
-    explicit Node(int id): Node() {this->id = id; };
+    Node(): id(0), type(1), early_time(480), last_time(1440) {};
+    explicit Node(int id): Node() {this->id = id; this->type = (id == 1)?1 : (id > 1000)? 3: 2; };
     Node(int id, int type, float w, float v, int et, int lt): id(id), type(type), demand_volume(v), demand_weight(w), early_time(et), last_time(lt){ }
 };
 
 // vehicle object
-const int IVECO = 1; // vehicle type
-const int TRUCK = 2; // vehicle type
+enum {IVECO, TRUCK}; //Vehicle Type
 
 class Vehicle {
 private:
         int type, v_id;
 public:
+    // constructor
     Vehicle(int id, int v_type) : v_id(id), type(v_type) { }
     explicit Vehicle(int id) : v_id(id), type(IVECO) { }
-public:
+
+    // attribution getter
     int get_vehicle_id() const { return v_id; };
     int get_type() const {return type; }
     int capacity() const;
@@ -52,7 +49,6 @@ public:
     int cost_pkm() const;
     int fix_cost() const;
 };
-
 int inline Vehicle::capacity() const {
     return type == IVECO? 12 : 16;
 }
@@ -69,25 +65,42 @@ int inline Vehicle::fix_cost() const{
     return type == IVECO? 200 : 300;
 }
 
+// 序列信息快 (用于评价方法)
 struct SeqProperty {
-    int Dur; // 经过松弛的seq通过时间
-    int E;
-    int L;
-    int TW;
-    int WT; // 在L(seq)出发时依然需要的等待时间
-    bool f;
-    int Y_prev;
-    int Y_rear;
-    int EY;
+    int Dur;    // 经过松弛的seq通过时间
+    int E;      // 使得Dur最小的最早到达第一个点时间
+    int L;      // 使得Dur最小的最晚到达第一个点时间
+    int TW;     // 在E(seq)出发时依然需要的回溯时间
+    int WT;     // 在L(seq)出发时依然需要的等待时间
+    bool f;     // true为包含充电站 false为不包含充电站
+    int Y_prev; // 第一个节点到第一个充电站的里程要求
+    int Y_rear; // 最后一个充电站到最后一个节点的历程需求
+    int EY;     // 虚拟里程, 即电量违背
 };
+
+/**
+ * 从节点构建序列信息
+ * n: 用于构建序列的节点
+ * Return: SeqProperty对象
+ */
 const SeqProperty make_property_from_node(const Node &n);
 
+/**
+ * 惩罚系数管理类
+ */
 class PenaltyParam {
 public:
+    //constructor
     PenaltyParam(double v = vw, double w = ww, double t = tw, double e = ew) : volumeW(v), weightW(w), timeWinW(t), energyW(e) , times(1){ }
+    // 修改惩罚系数的倍数
     void Raise(int time) {
         times = time;
     }
+    // 恢复惩罚系数为默认值
+    void setDefault() {
+        times = 1;
+    }
+    // getters
     double getVolumeW() const {
         return times * volumeW;
     }
@@ -100,14 +113,12 @@ public:
     double getEnergyW() const {
         return times * energyW;
     }
-    void setDefault() {
-        times = 1;
-    }
+    // 设置默认惩罚系数值
     static void initialPenaltyParam(ALNS_Parameters &param);
 private:
     double volumeW, weightW, timeWinW, energyW;
-    static double vw, ww, tw,ew;
-    int times;
+    static double vw, ww, tw,ew; // 用于在初始化参数阶段设置PenaltyParam的默认参数 与initalPaneltyParam 共同使用
+    int times; // 当前惩罚系数的倍数
 };
 
 class Route {
@@ -132,7 +143,8 @@ public:
     void lazy_remove(int position); // 懒惰删除 O(1)复杂度 与update成对使用
     void remove(int position); // 积极删除 O(n) 复杂度
     void execTwoOpt(int begin, int end); // begin和end是反转序列的开始点和结束点
-    void update(int failure_begin, int failure_end) { update_whole_route();} // 在insert, remove和execute 之后对属性信息进行更新 failure_begin 原有失效开始的位置和failure_end 原有失效结束的位置, 对于单点插入, 删除 应该是两者应该相等
+    // 在insert, remove和execute 之后对属性信息进行更新 failure_begin 原有失效开始的位置和failure_end 原有失效结束的位置, 对于单点插入, 删除 应该是两者应该相等
+    void update(int failure_begin, int failure_end) { update_whole_route();} 
 
     // route评价函数
     double ACUT(); // 计算路径的ACUT, 直观: 单位有效载重的估算价格
@@ -142,17 +154,17 @@ public:
     double evaluateTwoOpt(int begin, int end); // begin和end是反转序列的开始点和结束点
     //evaluate 系列方法给的是动作发生前后后路径penalizedCost的变化值
     bool isFeasible();
+
     static void set_graph_info(std::vector<std::vector<int>> &d_mat, std::vector<std::vector<int>> &t_mat, std::vector<Node> &nl);
     static const std::vector<std::vector<int>>* get_dist_mat() {return &dist_mat; }
     static const std::vector<std::vector<int>>* get_time_mat() {return &time_mat; }
     static const std::vector<Node>* get_node_list() {return &node_list; }
+
 private:
     static std::vector<std::vector<int>> dist_mat;
     static std::vector<std::vector<int>> time_mat;
     static std::vector<Node> node_list;
 
-//    std::vector<int> leave_time; // 离开第i个节点的时间, 最后一个节点的时间记录返程到达仓库的时间
-//    std::vector<int> dist_rest; // 离开第i个节点时的剩余里程
     int start_time, cnt_SR;
     double penalizedCost, objCost;
     std::vector<SeqProperty> forward;
@@ -162,11 +174,22 @@ private:
     SeqProperty property_concatenate(const SeqProperty &a, const SeqProperty &b, int id_last_node_in_a, int id_first_node_in_b, int max_distance);
     // 对seq序列计算用于评价的值
     SeqProperty calPropertyForSeq(const std::vector<int> &seq, double &weight, double &volume, int &distance, int &SR);
+    
     void update_whole_route();
+    // 从failure position向前向后更新属性值
     void update_partial(int failure_position);
 
 };
-
+/**
+ * 计算惩罚目标函数
+ * vehicle: 负责这个sequence的车型
+ * total_dist: sequence的总里程
+ * cnt_SR: 序列中包含的充电站数量
+ * total_weight/volume: 序列的总容量
+ * seqInfo: 序列的序列信息块
+ * paneltyParam: 当前的惩罚系数
+ * Return: 带惩罚目标函数值
+ */
 double calculate_penalized_cost(const Vehicle &vehicle,
                                 int total_dist,
                                 int cnt_SR,
@@ -174,14 +197,14 @@ double calculate_penalized_cost(const Vehicle &vehicle,
                                 double total_volume,
                                 const SeqProperty &seqInfo, const PenaltyParam &penaltyParam);
 
-// 记录插入node点时, 尝试前后充电站信息
+// 记录插入node点时, 尝试前后充电站的信息
 struct InsertInfo {
     int cur_route;
     int cur_position;
-    int RS_ahead;
-    int RS_post;
-    double cost;
-    bool change_type;
+    int RS_ahead;       // 节点前插入的RS下标
+    int RS_post;        // 节点后插入的RS下标
+    double cost;        // 插入成本
+    bool change_type;   // 是否改变车型
 };
 
 // 用于RCL的比较函数, RCL中, 最大的总是在最前, 当有更小的加入时, 最大的被pop出
@@ -228,7 +251,7 @@ void do_insert_from_info(Route &route, InsertInfo &info, int node_id);
 int find_best_charger(Route &cur_route, int cur_position, int node_id, bool ahead,
                       const std::vector<std::vector<int>> *dist_mat);
 
-
+// 判断remove_list中的元素是否有重复
 bool remove_list_is_unique(std:: vector<int> &rList);
 
 # endif //LOGISTICS_H
