@@ -60,6 +60,7 @@ void read_dist_time_mat(const string &dist_mat_file,
 void read_nodes(const string &filename, vector<Node> &nodes, bool header) {
     ifstream in(filename);
     string line;
+    if (!in) throw invalid_argument("input_node reading fails.\n");
     while (getline(in, line)) {
         if (header) {
             header = false;
